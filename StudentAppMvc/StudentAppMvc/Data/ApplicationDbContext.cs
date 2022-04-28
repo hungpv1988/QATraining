@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using StudentAppMvc.Models;
 
 namespace StudentAppMvc.Data
 {
@@ -8,6 +9,13 @@ namespace StudentAppMvc.Data
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
         {
+        }
+        public DbSet<StudentAppMvc.Models.Student> Student { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            builder.Entity<Student>().ToTable("Student");
+            base.OnModelCreating(builder);
         }
     }
 }
