@@ -1,10 +1,17 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using StudentAppMvc.Models;
 
 namespace StudentAppMvc.Controllers
 {
     public class StudentController : Controller
     {
+        private static List<Student> _studentList;
+        public StudentController()
+        {
+
+        }
+
         // GET: StudentController
         public ActionResult Index()
         {
@@ -23,13 +30,25 @@ namespace StudentAppMvc.Controllers
             return View();
         }
 
+        public ActionResult CreateStudentWithoutModel()
+        {
+            return View();
+        }
+
         // POST: StudentController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
+        public ActionResult Create(Student student)
         {
             try
             {
+                if (_studentList == null) 
+                {
+                    _studentList = new List<Student>();
+                }
+
+                _studentList.Add(student);
+
                 return RedirectToAction(nameof(Index));
             }
             catch
@@ -78,6 +97,12 @@ namespace StudentAppMvc.Controllers
             {
                 return View();
             }
+        }
+
+
+        public ActionResult CreateStudentForQLPham() 
+        {
+            return View();
         }
     }
 }
