@@ -8,5 +8,13 @@
         public string Name { get; set; }
 
         public string Description { get; set; }
+
+        public int DateOfBirth { get; set; }
+
+        public bool Gender { get; set; }
+
+        public string Email { get; set; }
+
+        public string StudentAccount { get; set; }
     }
 }

@@ -2,6 +2,48 @@
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
 @{
+    ViewData["Title"] = "Student Management";
+    List<Student> students = (List<Student>)ViewData["Students"]!;
 }
 
+
 <h2>This page is for Ming's Student Management</h2>
+<hr />
+<h4>Welcome students: </h4>
+<br />
+<table>
+    <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Description</th>
+        <th>Description</th>
+        <th>Gender</th>
+        <th>Email</th>
+        <th>StudentAccount</th>
+    </tr>
+    @{
+        if (students.Count == 0)
+        {
+            <tr>
+                <td colspan=7>No student in list.</td>
+            </tr>
+        }
+        foreach (Student student in students)
+        {
+            string gender = student.Gender ? "Male" : "Female";
+            <tr>
+                <td>@student.Id</td>
+                <td>@student.Name</td>
+                <td>@student.Description</td>
+                <td>@student.DateOfBirth</td>
+                <td>@gender</td>
+                <td>@student.Email</td>
+                <td>@student.StudentAccount</td>
+            </tr>
+        }
+    }
+</table>
+<br />
+<div>
+    <a asp-action="Create">Create Student</a>
+</div>
