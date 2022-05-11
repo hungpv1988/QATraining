@@ -9,10 +9,10 @@ namespace StudentAppMvc.Models
 
         [Display(Name = "Student Name")]
         [StringLength(60, MinimumLength = 1)]
-        [Required]
+        [Required(ErrorMessage ="Please input Student name")]
         public string Name { get; set; }
 
-        public string Description { get; set; }
+        public string? Description { get; set; }
 
         [Display(Name = "Date Of Birth")]
         [DataType(DataType.Date)]
@@ -20,11 +20,11 @@ namespace StudentAppMvc.Models
 
         public bool Gender { get; set; }
 
-        [RegularExpression(@"^([\w\.\-]+)@hut.edu$")]
+        [RegularExpression(@"^([\w\.\-]+)@hut.edu$", ErrorMessage = "Email should be @hut.edu")]
         [Required]
         public string Email { get; set; }
 
         [StringLength(5)]
-        public string StudentAccount { get; set; }
+        public string? StudentAccount { get; set; }
     }
 }
