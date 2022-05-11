@@ -60,16 +60,21 @@ namespace StudentAppMvc.Controllers
         // GET: StudentController/Edit/5
         public ActionResult Edit(int id)
         {
-            return View();
+            var student = _studentList.Where(s => s.Id == id);
+
+            return View(student);
         }
 
         // POST: StudentController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        public ActionResult Edit(Student student)
         {
             try
             {
+                var oldStudent = _studentList.Where(s => s.Id == student.Id).FirstOrDefault();
+                oldStudent.Name = student.Name;
+
                 return RedirectToAction(nameof(Index));
             }
             catch

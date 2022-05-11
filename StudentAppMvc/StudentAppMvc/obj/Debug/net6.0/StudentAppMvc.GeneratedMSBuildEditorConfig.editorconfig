@@ -95,6 +95,10 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU3R1ZGVudFxDcmVhdGVTdHVkZW50V2l0aG91dE1vZGVsLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
+[D:/EPiServer/Tech/QATraining/StudentAppMvc/StudentAppMvc/Views/Student/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU3R1ZGVudFxFZGl0LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
 [D:/EPiServer/Tech/QATraining/StudentAppMvc/StudentAppMvc/Views/Student/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU3R1ZGVudFxJbmRleC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
