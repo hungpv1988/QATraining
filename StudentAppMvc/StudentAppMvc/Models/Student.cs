@@ -16,7 +16,7 @@ namespace StudentAppMvc.Models
 
         [Display(Name = "Date Of Birth")]
         [DataType(DataType.Date)]
-        public int DateOfBirth { get; set; }
+        public DateTime? DateOfBirth { get; set; }
 
         public bool Gender { get; set; }
 

@@ -16,7 +16,7 @@
         <th>ID</th>
         <th>Name</th>
         <th>Description</th>
-        <th>Description</th>
+        <th>DateOfBirth</th>
         <th>Gender</th>
         <th>Email</th>
         <th>StudentAccount</th>
@@ -35,10 +35,15 @@
                 <td>@student.Id</td>
                 <td>@student.Name</td>
                 <td>@student.Description</td>
-                <td>@student.DateOfBirth</td>
+                <td>@student.DateOfBirth?.ToString("dd/MM/yy")</td>
                 <td>@gender</td>
                 <td>@student.Email</td>
                 <td>@student.StudentAccount</td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@student.Id">Edit</a> | 
+                    <a asp-action="Detail" asp-route-id="@student.Id">Detail</a> |
+                    <a asp-action="Delete" asp-route-id="@student.Id" onclick="return confirm('Are you sure to delete this student?');">Delete</a>
+                </td>
             </tr>
         }
     }
