@@ -1,14 +1,58 @@
 ﻿
-
+@model List<StudentAppMvc.Models.Student>
 @{
     ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+<style>
+    #students {
+      font-family: Arial, Helvetica, sans-serif;
+      border-collapse: collapse;
+      width: 100%;
+    }
 
+    #students td, #students th {
+      border: 1px solid #ddd;
+      padding: 8px;
+    }
+
+    #students tr:nth-child(even){background-color: #f2f2f2;}
+
+    #students tr:hover {background-color: #ddd;}
+
+    #students th {
+      padding-top: 12px;
+      padding-bottom: 12px;
+      text-align: left;
+      background-color: #04AA6D;
+      color: white;
+    }
+</style>
+
+
+<table id="students">
+    <tr>
+        <th>Student Name</th>
+        <th>Description</th>
+        <th></th>
+    </tr>
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td style="vertical-align:top; width:10%">@item.Name</td>
+            <td style="width:75%">@item.Description</td>
+            <td style="width:15%">
+                <a href="Edit?Id=@item.Id">View Details </a>
+                &nbsp &nbsp &nbsp
+                <a href="Delete?Id=@item.Id">Delete</a>
+            </td>
+        </tr>    
+    }
+</table>
 
 
 <div>
-    <a asp-action="Create">Create a new student</a>
+    <a asp-action="Create?id=1">Create a new student</a>
 </div>
 
 @section Scripts {
