@@ -1,9 +1,11 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using StudentAppMvc.Filter;
 using StudentAppMvc.Models;
 
 namespace StudentAppMvc.Controllers
 {
+    [AuthenticationFilter]
     public class StudentController : Controller
     {
         private static List<Student> _studentList;
