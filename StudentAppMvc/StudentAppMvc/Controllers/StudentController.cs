@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using StudentAppMvc.Models;
 
 namespace StudentAppMvc.Controllers
@@ -15,31 +14,24 @@ namespace StudentAppMvc.Controllers
         // GET: StudentController
         public ActionResult Index()
         {
-            var studentList = new List<Student>()
+            if (_studentList == null)
             {
-                new Student(){ Name = "student 1", Description = "I am an optimistic, candid, responsible and social person. I am confident with my thinking analysis that I can convince people with my points. I am self-reliant, well behaved and above all, a person of strong character. I take initiative whenever the situation arises and come off with flying colours", Id = 1},
-                new Student(){ Name = "student 2", Description = "I think that I am a responsible and honest boy/girl who wants to do things successfully. I am punctual towards my work and do it before time. I believe that mutual cooperation is a way to success and like to help people whenever they seek my help. I am an average student and like to read books and play chess.", Id = 2}
-            };
-            return View(studentList);
+                _studentList = new List<Student>();
+                _studentList.Add(new Student() { Name = "Student 1", Description = "I am an optimistic, candid, responsible and social person. I am confident with my thinking analysis that I can convince people with my points. I am self-reliant, well behaved and above all, a person of strong character. I take initiative whenever the situation arises and come off with flying colours",Email="student1@test.com",Id = 1 });
+            }
+            
+            return View(_studentList);
+
         }
 
-        // GET: StudentController/Details/5
-        public ActionResult Details(int id)
-        {
-            return View();
-        }
-
+        
         // GET: StudentController/Create
         public ActionResult Create()
         {
             return View();
         }
 
-        public ActionResult CreateStudentWithoutModel()
-        {
-            return View();
-        }
-
+       
         // POST: StudentController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -52,6 +44,16 @@ namespace StudentAppMvc.Controllers
                     _studentList = new List<Student>();
                 }
 
+
+                if (_studentList.Where(s => s.Email == student.Email).FirstOrDefault() != null)
+                {
+                    ModelState.AddModelError("Email", "This email address is existing.");
+                }
+
+                if (ModelState.ErrorCount > 0)
+                    return View(student);
+
+                student.Id = _studentList.Count() + 3;
                 _studentList.Add(student);
 
                 return RedirectToAction(nameof(Index));
@@ -62,10 +64,19 @@ namespace StudentAppMvc.Controllers
             }
         }
 
+
+        // GET: Detail
+        public ActionResult Details(int id)
+        {
+            Student student = _studentList.FirstOrDefault(s => s.Id == id);
+            return View(student);
+        }
+
+
         // GET: StudentController/Edit/5
         public ActionResult Edit(int id)
         {
-            var student = _studentList.Where(s => s.Id == id);
+            Student student = _studentList.FirstOrDefault(s => s.Id == id);
 
             return View(student);
         }
@@ -78,7 +89,18 @@ namespace StudentAppMvc.Controllers
             try
             {
                 var oldStudent = _studentList.Where(s => s.Id == student.Id).FirstOrDefault();
+
+                if (_studentList.FirstOrDefault(s => s.Email == student.Email) != null && student.Email != oldStudent.Email)
+                {
+                    ModelState.AddModelError("Email", "This email address is existing.");
+                }
+
+                if (ModelState.ErrorCount > 0)
+                    return View(student);
+
                 oldStudent.Name = student.Name;
+                oldStudent.Description = student.Description;
+                oldStudent.Email = student.Email;
 
                 return RedirectToAction(nameof(Index));
             }
@@ -91,7 +113,8 @@ namespace StudentAppMvc.Controllers
         // GET: StudentController/Delete/5
         public ActionResult Delete(int id)
         {
-            return View();
+            Student student = _studentList.FirstOrDefault(s => s.Id == id);
+            return View(student);
         }
 
         // POST: StudentController/Delete/5
@@ -101,6 +124,8 @@ namespace StudentAppMvc.Controllers
         {
             try
             {
+                Student student = _studentList.FirstOrDefault(s => s.Id == id);
+                _studentList.Remove(student);
                 return RedirectToAction(nameof(Index));
             }
             catch
@@ -109,10 +134,5 @@ namespace StudentAppMvc.Controllers
             }
         }
 
-
-        public ActionResult CreateStudentForQLPham() 
-        {
-            return View();
-        }
     }
 }
