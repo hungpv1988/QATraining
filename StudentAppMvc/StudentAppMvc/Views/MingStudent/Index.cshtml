@@ -9,6 +9,26 @@
 
 <h2>This page is for Ming's Student Management</h2>
 <hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Index">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label class="control-label">Search for Student</label>
+                @{
+                    if (!ViewData.ContainsKey("searchName"))
+                        ViewData["searchName"] = "";
+                    <input id="searchName" name="searchName" class="form-control" value = @ViewData["searchName"]></input>
+                }
+                
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Search" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+<br />
 <h4>Welcome students: </h4>
 <br />
 <table>
@@ -25,7 +45,7 @@
         if (students.Count == 0)
         {
             <tr>
-                <td colspan=7>No student in list.</td>
+                <td colspan=7>No student found.</td>
             </tr>
         }
         foreach (Student student in students)
@@ -50,5 +70,5 @@
 </table>
 <br />
 <div>
-    <a asp-action="Create">Create Student</a>
+    <a asp-action="Create">Create Student</a> | <a asp-action="Index" asp-route-latestCount=5>Get last 5 students</a> | <a asp-action="Index">Get all students</a>
 </div>

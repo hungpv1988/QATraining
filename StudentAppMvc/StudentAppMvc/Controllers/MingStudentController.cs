@@ -1,50 +1,48 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+using Microsoft.AspNetCore.Mvc;
+using StudentAppMvc.Filter;
 using StudentAppMvc.Models;
 
 namespace StudentAppMvc.Controllers
 {
+    [AuthenticationFilter]
+    [LogFilter]
     public class MingStudentController : Controller
     {
         private static List<Student>? _students = new List<Student>();
-        private static int count = 1;
         public MingStudentController()
         {
             if (_students?.Count == 0)
             {
-                _students.Add(new Student()
-                {
-                    Id = count++,
-                    Name = "Minh",
-                    Description = "Sample student",
-                    DateOfBirth = DateTime.Now,
-                    Gender = false,
-                    Email = "minh@hut.edu",
-                    StudentAccount = "STDx0"
-                });
-                _students.Add(new Student()
-                {
-                    Id = count++,
-                    Name = "Bảo",
-                    Description = "Sample student",
-                    DateOfBirth = DateTime.Now,
-                    Gender = true,
-                    Email = "bao@hut.edu",
-                    StudentAccount = "STDx1"
-                });
-            }    
+                _students.Add(new Student(_students.Count + 1, "Minh", "Sample student", DateTime.Now, false, "minh@hut.edu" ));
+                _students.Add(new Student(_students.Count + 1, "Bảo", "Sample student", DateTime.Now, false, "bao@hut.edu" ));
+                _students.Add(new Student(_students.Count + 1, "Ngọc", "Sample student", DateTime.Now, false, "ngoc@hut.edu" ));
+                _students.Add(new Student(_students.Count + 1, "Kang", "Sample student", DateTime.Now, false, "kang@hut.edu" ));
+                _students.Add(new Student(_students.Count + 1, "Khanh", "Sample student", DateTime.Now, false, "khanh@hut.edu" ));
+                _students.Add(new Student(_students.Count + 1, "Hi", "Sample student", DateTime.Now, false, "hi@hut.edu" ));
+            }   
         }
 
         // Default view for GET list
-        public IActionResult Index()
+        public IActionResult Index(int latestCount = 0, string searchName = "")
         {
-            ViewData["Students"] = _students;
+            latestCount = (latestCount < _students.Count) ? latestCount : _students.Count;
+            if (latestCount > 0)
+                ViewData["Students"] = _students.GetRange(_students.Count - latestCount, latestCount);
+            else if (!string.IsNullOrEmpty(searchName))
+            {
+                ViewData["Students"] = _students.Where(s => s.Name.Contains(searchName.Trim()) || s.Description.Contains(searchName) || s.Email.Contains(searchName)).ToList();
+                ViewData["searchName"] = searchName;
+            }    
+            else
+                ViewData["Students"] = _students;
             return View();
         }
 
         // GET: Create
         public ActionResult Create()
         {
-
             return View();
         }
 
@@ -53,7 +51,6 @@ namespace StudentAppMvc.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create(Student student)
         {
-
             try
             {
                 if (_students == null)
@@ -62,15 +59,15 @@ namespace StudentAppMvc.Controllers
                 }
 
                 // Check if email/ student account is existing, return same view with error message
-                if (_students.Where(s => s.Email == student.Email).FirstOrDefault() != null)
+                if (_students.Any(s => s.Email.Equals(student.Email)))
                     ModelState.AddModelError("Email", "This email address is existing.");
-                if (!string.IsNullOrEmpty(student.StudentAccount) && (_students.Where(s => s.StudentAccount == student.StudentAccount).FirstOrDefault() != null))
+                if (!string.IsNullOrEmpty(student.StudentAccount) && _students.Any(s => s.StudentAccount.Equals(student.StudentAccount)))
                     ModelState.AddModelError("StudentAccount", "This student account is existing.");
 
                 if (ModelState.ErrorCount > 0)
                     return View(student);
 
-                student.Id = count++;
+                student.Id = _students.Count + 1;
                 _students.Add(student);
 
                 return RedirectToAction(nameof(Index));
@@ -95,7 +92,7 @@ namespace StudentAppMvc.Controllers
             return View(student);
         }
 
-        // POST: Create
+        // POST: Edit
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Edit(Student student)
@@ -110,22 +107,27 @@ namespace StudentAppMvc.Controllers
                     return View(student);
                 }    
 
-
                 // Check if email/ student account is used by another student
-                if (_students.Where(s => s.Email == student.Email && s.Id != student.Id).FirstOrDefault() != null)
+                if (_students.Any(s => s.Email.Equals(student.Email) && s.Id != student.Id))
                     ModelState.AddModelError("Email", "This email address is existing.");
-                if (!string.IsNullOrEmpty(student.StudentAccount) && (_students.Where(s => s.StudentAccount == student.StudentAccount && s.Id != student.Id).FirstOrDefault() != null))
+                if (!string.IsNullOrEmpty(student.StudentAccount) && (_students.Any(s => s.StudentAccount.Equals(student.StudentAccount) && s.Id != student.Id)))
                     ModelState.AddModelError("StudentAccount", "This student account is existing.");
 
                 if (ModelState.ErrorCount > 0)
                     return View(student);
 
                 // Update student
-                int index = _students.IndexOf(editStudent);
-                _students[index] = student;
+                editStudent.Name = student.Name;
+                editStudent.Email = student.Email;
+                editStudent.Gender = student.Gender;
+                editStudent.Description = student.Description;
+                editStudent.DateOfBirth = student.DateOfBirth;
+                editStudent.StudentAccount = student.StudentAccount;
+
+                //int index = _students.IndexOf(editStudent);
+                //_students[index] = student;
 
                 return RedirectToAction(nameof(Detail), new { id = student.Id } );
-                //return RedirectToAction(nameof(Index));
             }
             catch
             {

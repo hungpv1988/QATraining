@@ -1,11 +1,11 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using StudentAppMvc.Filter;
 using StudentAppMvc.Models;
 
 namespace StudentAppMvc.Controllers
 {
     [AuthenticationFilter]
+    [LogFilter]
     public class StudentController : Controller
     {
         private static List<Student> _studentList;
@@ -19,8 +19,8 @@ namespace StudentAppMvc.Controllers
         {
             var studentList = new List<Student>()
             {
-                new Student(){ Name = "student 1", Description = "I am an optimistic, candid, responsible and social person. I am confident with my thinking analysis that I can convince people with my points. I am self-reliant, well behaved and above all, a person of strong character. I take initiative whenever the situation arises and come off with flying colours", Id = 1},
-                new Student(){ Name = "student 2", Description = "I think that I am a responsible and honest boy/girl who wants to do things successfully. I am punctual towards my work and do it before time. I believe that mutual cooperation is a way to success and like to help people whenever they seek my help. I am an average student and like to read books and play chess.", Id = 2}
+                //new Student(){ Name = "student 1", Description = "I am an optimistic, candid, responsible and social person. I am confident with my thinking analysis that I can convince people with my points. I am self-reliant, well behaved and above all, a person of strong character. I take initiative whenever the situation arises and come off with flying colours", Id = 1},
+                //new Student(){ Name = "student 2", Description = "I think that I am a responsible and honest boy/girl who wants to do things successfully. I am punctual towards my work and do it before time. I believe that mutual cooperation is a way to success and like to help people whenever they seek my help. I am an average student and like to read books and play chess.", Id = 2}
             };
             return View(studentList);
         }
