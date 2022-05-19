@@ -11,22 +11,23 @@ namespace StudentAppMvc.Filter
 
         public override void OnActionExecuted(ActionExecutedContext context)
         {
+            var request = context.HttpContext.Request;
             Console.WriteLine("-------------------------------------------------------------");
             Console.WriteLine("- Logged by Ming -");
             Console.WriteLine("-------------------------------------------------------------");
-            Console.WriteLine(string.Format($"Action Method {context.HttpContext.Request.Method} {context.HttpContext.Request.Path} executed at {DateTime.Now}"));
-            if (context.HttpContext.Request.Method.Equals("POST") && context.HttpContext.Request.Path.Equals("/MingStudent/Create"))
+            Console.WriteLine(string.Format($"Action Method {request.Method} {request.Path} executed at {DateTime.Now}"));
+            if (request.Method.Equals("POST") && request.Path.Equals("/MingStudent/Create"))
             {
-                foreach (var key in context.HttpContext.Request.Form.Keys)
+                foreach (var key in request.Form.Keys)
                 {
-                    Console.WriteLine($"Added {key} with value {context.HttpContext.Request.Form[key]}");
+                    Console.WriteLine($"Added {key} with value \"{request.Form[key]}\"");
                 }
             }
-            else if (context.HttpContext.Request.Method.Equals("POST") &&  context.HttpContext.Request.Path.ToString().Contains("/MingStudent/Edit"))
+            else if (request.Method.Equals("POST") &&  request.Path.ToString().Contains("/MingStudent/Edit"))
             {
-                foreach (var key in context.HttpContext.Request.Form.Keys)
+                foreach (var key in request.Form.Keys)
                 {
-                    Console.WriteLine($"Update {key} with value {context.HttpContext.Request.Form[key]}");
+                    Console.WriteLine($"Update {key} with value \"{request.Form[key]}\"");
                 }
             }
         }

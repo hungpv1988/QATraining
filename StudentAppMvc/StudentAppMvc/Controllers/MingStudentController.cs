@@ -28,11 +28,13 @@ namespace StudentAppMvc.Controllers
         public IActionResult Index(int latestCount = 0, string searchName = "")
         {
             latestCount = (latestCount < _students.Count) ? latestCount : _students.Count;
+            searchName = searchName.Trim();
             if (latestCount > 0)
                 ViewData["Students"] = _students.GetRange(_students.Count - latestCount, latestCount);
             else if (!string.IsNullOrEmpty(searchName))
             {
-                ViewData["Students"] = _students.Where(s => s.Name.Contains(searchName.Trim()) || s.Description.Contains(searchName) || s.Email.Contains(searchName)).ToList();
+                // Search from Name, Description and Email
+                ViewData["Students"] = _students.Where(s => s.Name.Contains(searchName, StringComparison.OrdinalIgnoreCase) || s.Description.Contains(searchName, StringComparison.OrdinalIgnoreCase) || s.Email.Contains(searchName, StringComparison.OrdinalIgnoreCase)).ToList();
                 ViewData["searchName"] = searchName;
             }    
             else

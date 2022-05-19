@@ -4,6 +4,9 @@
 @{
     ViewData["Title"] = "Student Management";
     List<Student> students = (List<Student>)ViewData["Students"]!;
+    //if (!ViewData.ContainsKey("searchName"))
+    //    ViewData["searchName"] = "";
+    string searchName = ViewData.ContainsKey("searchName") ? ViewData["searchName"].ToString() : "";
 }
 
 
@@ -16,9 +19,7 @@
             <div class="form-group">
                 <label class="control-label">Search for Student</label>
                 @{
-                    if (!ViewData.ContainsKey("searchName"))
-                        ViewData["searchName"] = "";
-                    <input id="searchName" name="searchName" class="form-control" value = @ViewData["searchName"]></input>
+                    <input id="searchName" name="searchName" class="form-control" value = @searchName></input>
                 }
                 
             </div>
@@ -53,11 +54,37 @@
             string gender = student.Gender ? "Male" : "Female";
             <tr>
                 <td>@student.Id</td>
-                <td>@student.Name</td>
-                <td>@student.Description</td>
+                @{
+                    if (!String.IsNullOrEmpty(searchName) && student.Name.Contains(searchName, StringComparison.OrdinalIgnoreCase))
+                    {
+                        <td class = "found">@student.Name</td>
+                    }
+                    else
+                    {
+                        <td>@student.Name</td>
+                    }
+                    if (!String.IsNullOrEmpty(searchName) && student.Description.Contains(searchName, StringComparison.OrdinalIgnoreCase))
+                    {
+                        <td class = "found">@student.Description</td>
+                    }
+                    else
+                    {
+                        <td>@student.Description</td>
+                    }
+                }
+
                 <td>@student.DateOfBirth?.ToString("dd/MM/yy")</td>
                 <td>@gender</td>
-                <td>@student.Email</td>
+                @{
+                    if (!String.IsNullOrEmpty(searchName) && student.Email.Contains(searchName, StringComparison.OrdinalIgnoreCase))
+                    {
+                        <td class = "found">@student.Email</td>
+                    }
+                    else
+                    {
+                        <td>@student.Email</td>
+                    }
+                }
                 <td>@student.StudentAccount</td>
                 <td>
                     <a asp-action="Edit" asp-route-id="@student.Id">Edit</a> | 
