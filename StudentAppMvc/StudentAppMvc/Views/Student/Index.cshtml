@@ -1,5 +1,5 @@
 ﻿
-@model List<StudentAppMvc.Models.Student>
+@model StudentList
 @{
     ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -29,30 +29,17 @@
     }
 </style>
 
+@{
+    await Html.RenderPartialAsync("_MyStudentList", 
+                            Model,
+                            new ViewDataDictionary(ViewData)
+                            );
+}
 
-<table id="students">
-    <tr>
-        <th>Student Name</th>
-        <th>Description</th>
-        <th></th>
-    </tr>
-    @foreach (var item in Model)
-    {
-        <tr>
-            <td style="vertical-align:top; width:10%">@item.Name</td>
-            <td style="width:75%">@item.Description</td>
-            <td style="width:15%">
-                <a href="Edit?Id=@item.Id">View Details </a>
-                &nbsp &nbsp &nbsp
-                <a href="Delete?Id=@item.Id">Delete</a>
-            </td>
-        </tr>    
-    }
-</table>
 
 
 <div>
-    <a asp-action="Create?id=1">Create a new student</a>
+    <a asp-action="Create?id=1">Create a new student aaaa</a>
 </div>
 
 @section Scripts {
