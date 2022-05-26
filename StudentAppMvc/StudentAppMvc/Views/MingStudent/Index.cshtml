@@ -2,11 +2,9 @@
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
 @{
-    ViewData["Title"] = "Student Management";
-    List<Student> students = (List<Student>)ViewData["Students"]!;
-    //if (!ViewData.ContainsKey("searchName"))
-    //    ViewData["searchName"] = "";
-    string searchName = ViewData.ContainsKey("searchName") ? ViewData["searchName"].ToString() : "";
+    ViewBag.Title = "Student Management";
+    List<Student> students = ViewBag.Students!;
+    string searchName = !String.IsNullOrEmpty(ViewBag.searchName) ? ViewBag.searchName.ToString() : "";
 }
 
 
@@ -14,14 +12,14 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Index">
+        <form asp-action="Search">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label class="control-label">Search for Student</label>
                 @{
-                    <input id="searchName" name="searchName" class="form-control" value = @searchName></input>
+                    <input id="searchName" name="searchName" class="form-control" data-val="true" data-val-required="Please input name to search"  value = @searchName></input>
+                    <span class="text-danger field-validation-valid" data-valmsg-for="searchName" data-valmsg-replace="true"></span>
                 }
-                
             </div>
             <div class="form-group">
                 <input type="submit" value="Search" class="btn btn-primary" />
@@ -32,70 +30,11 @@
 <br />
 <h4>Welcome students: </h4>
 <br />
-<table>
-    <tr>
-        <th>ID</th>
-        <th>Name</th>
-        <th>Description</th>
-        <th>DateOfBirth</th>
-        <th>Gender</th>
-        <th>Email</th>
-        <th>StudentAccount</th>
-    </tr>
-    @{
-        if (students.Count == 0)
-        {
-            <tr>
-                <td colspan=7>No student found.</td>
-            </tr>
-        }
-        foreach (Student student in students)
-        {
-            string gender = student.Gender ? "Male" : "Female";
-            <tr>
-                <td>@student.Id</td>
-                @{
-                    if (!String.IsNullOrEmpty(searchName) && student.Name.Contains(searchName, StringComparison.OrdinalIgnoreCase))
-                    {
-                        <td class = "found">@student.Name</td>
-                    }
-                    else
-                    {
-                        <td>@student.Name</td>
-                    }
-                    if (!String.IsNullOrEmpty(searchName) && student.Description.Contains(searchName, StringComparison.OrdinalIgnoreCase))
-                    {
-                        <td class = "found">@student.Description</td>
-                    }
-                    else
-                    {
-                        <td>@student.Description</td>
-                    }
-                }
-
-                <td>@student.DateOfBirth?.ToString("dd/MM/yy")</td>
-                <td>@gender</td>
-                @{
-                    if (!String.IsNullOrEmpty(searchName) && student.Email.Contains(searchName, StringComparison.OrdinalIgnoreCase))
-                    {
-                        <td class = "found">@student.Email</td>
-                    }
-                    else
-                    {
-                        <td>@student.Email</td>
-                    }
-                }
-                <td>@student.StudentAccount</td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@student.Id">Edit</a> | 
-                    <a asp-action="Detail" asp-route-id="@student.Id">Detail</a> |
-                    <a asp-action="Delete" asp-route-id="@student.Id" onclick="return confirm('Are you sure to delete this student?');">Delete</a>
-                </td>
-            </tr>
-        }
-    }
-</table>
+@await Html.PartialAsync("_studentList", new {Students = students})
 <br />
 <div>
     <a asp-action="Create">Create Student</a> | <a asp-action="Index" asp-route-latestCount=5>Get last 5 students</a> | <a asp-action="Index">Get all students</a>
 </div>
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

@@ -3,6 +3,7 @@
 using Microsoft.AspNetCore.Mvc;
 using StudentAppMvc.Filter;
 using StudentAppMvc.Models;
+using System.Globalization;
 
 namespace StudentAppMvc.Controllers
 {
@@ -16,29 +17,49 @@ namespace StudentAppMvc.Controllers
             if (_students?.Count == 0)
             {
                 _students.Add(new Student(_students.Count + 1, "Minh", "Sample student", DateTime.Now, false, "minh@hut.edu" ));
-                _students.Add(new Student(_students.Count + 1, "Bảo", "Sample student", DateTime.Now, false, "bao@hut.edu" ));
-                _students.Add(new Student(_students.Count + 1, "Ngọc", "Sample student", DateTime.Now, false, "ngoc@hut.edu" ));
-                _students.Add(new Student(_students.Count + 1, "Kang", "Sample student", DateTime.Now, false, "kang@hut.edu" ));
+                _students.Add(new Student(_students.Count + 1, "Bảo Minh", "Sample student", DateTime.Now.Subtract(TimeSpan.FromDays(1000)), true, "bao@hut.edu" ));
+                _students.Add(new Student(_students.Count + 1, "Ngọc Minh", "Sample student", DateTime.Now.Subtract(TimeSpan.FromDays(700)), false, "ngoc@hut.edu" ));
+                _students.Add(new Student(_students.Count + 1, "Kang minh", "Sample student", DateTime.Now.Subtract(TimeSpan.FromDays(300)), true, "kang@hut.edu" ));
                 _students.Add(new Student(_students.Count + 1, "Khanh", "Sample student", DateTime.Now, false, "khanh@hut.edu" ));
                 _students.Add(new Student(_students.Count + 1, "Hi", "Sample student", DateTime.Now, false, "hi@hut.edu" ));
             }   
         }
 
         // Default view for GET list
-        public IActionResult Index(int latestCount = 0, string searchName = "")
+        public IActionResult Index(int latestCount = 0)
         {
             latestCount = (latestCount < _students.Count) ? latestCount : _students.Count;
-            searchName = searchName.Trim();
             if (latestCount > 0)
-                ViewData["Students"] = _students.GetRange(_students.Count - latestCount, latestCount);
-            else if (!string.IsNullOrEmpty(searchName))
-            {
-                // Search from Name, Description and Email
-                ViewData["Students"] = _students.Where(s => s.Name.Contains(searchName, StringComparison.OrdinalIgnoreCase) || s.Description.Contains(searchName, StringComparison.OrdinalIgnoreCase) || s.Email.Contains(searchName, StringComparison.OrdinalIgnoreCase)).ToList();
-                ViewData["searchName"] = searchName;
-            }    
+                ViewBag.Students = _students.GetRange(_students.Count - latestCount, latestCount);
             else
-                ViewData["Students"] = _students;
+                ViewBag.Students = _students;
+            return View();
+        }
+        
+        // Default view for GET list
+        public IActionResult Search(string searchName = "", string searchGender = "", string searchFromDate = "", string searchToDate = "")
+        {
+            List<Student> students = _students;
+            
+            if (!string.IsNullOrEmpty(searchName))
+            {
+                searchName = searchName.Trim();
+                students = _students.Where(s => s.Name.Contains(searchName, StringComparison.OrdinalIgnoreCase)).ToList();
+            }
+            if (!string.IsNullOrEmpty(searchGender))
+            {
+                bool gender = bool.Parse(searchGender);
+                students = students.Where(s => s.Gender == gender).ToList();
+            }    
+            if(!string.IsNullOrEmpty(searchFromDate))
+            {
+                DateTime fromDate = DateTime.ParseExact(searchFromDate, "yyyy-mm-dd", CultureInfo.InvariantCulture);
+                students = students.Where(s => s.DateOfBirth > fromDate).ToList();
+            }    
+            ViewBag.Students = students;
+            ViewBag.searchName = searchName;
+            ViewBag.searchGender = searchGender;
+            ViewBag.searchFromDate = searchFromDate;
             return View();
         }
 

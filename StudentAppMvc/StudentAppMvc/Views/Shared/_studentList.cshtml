@@ -1,0 +1,57 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    List<Student> students = ViewBag.Students!;
+    string searchName = ViewBag.searchName;
+}
+
+
+<h4>This is the partial view data: </h4>
+<br />
+<table>
+    <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Description</th>
+        <th>DateOfBirth</th>
+        <th>Gender</th>
+        <th>Email</th>
+        <th>StudentAccount</th>
+    </tr>
+    @{
+        if (students.Count == 0)
+        {
+            <tr>
+                <td colspan=7>No student found.</td>
+            </tr>
+        }
+        foreach (Student student in students)
+        {
+            string gender = student.Gender ? "Male" : "Female";
+            <tr>
+                <td>@student.Id</td>
+                @{
+                    if (!String.IsNullOrEmpty(searchName) && student.Name.Contains(searchName, StringComparison.OrdinalIgnoreCase))
+                    {
+                        <td class="found">@student.Name</td>
+                    }
+                    else
+                    {
+                        <td>@student.Name</td>
+                    }
+                }
+                <td>@student.Description</td>
+                <td>@student.DateOfBirth?.ToString("MM/dd/yy")</td>
+                <td>@gender</td>
+                <td>@student.Email</td>
+                <td>@student.StudentAccount</td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@student.Id">Edit</a> |
+                    <a asp-action="Detail" asp-route-id="@student.Id">Detail</a> |
+                    <a asp-action="Delete" asp-route-id="@student.Id" onclick="return confirm('Are you sure to delete this student?');">Delete</a>
+                </td>
+            </tr>
+        }
+    }
+</table>
