@@ -3,6 +3,7 @@
 using Microsoft.AspNetCore.Mvc;
 using StudentAppMvc.Filter;
 using StudentAppMvc.Models;
+using StudentAppMvc.Models.ViewModels;
 using System.Globalization;
 
 namespace StudentAppMvc.Controllers
@@ -28,12 +29,8 @@ namespace StudentAppMvc.Controllers
         // Default view for GET list
         public IActionResult Index(int latestCount = 0)
         {
-            latestCount = (latestCount < _students.Count) ? latestCount : _students.Count;
-            if (latestCount > 0)
-                ViewBag.Students = _students.GetRange(_students.Count - latestCount, latestCount);
-            else
-                ViewBag.Students = _students;
-            return View();
+            StudentsViewModels studentsViewModel = new StudentsViewModels(_students);
+            return View(studentsViewModel);
         }
         
         // Default view for GET list
@@ -55,12 +52,10 @@ namespace StudentAppMvc.Controllers
             {
                 DateTime fromDate = DateTime.ParseExact(searchFromDate, "yyyy-mm-dd", CultureInfo.InvariantCulture);
                 students = students.Where(s => s.DateOfBirth > fromDate).ToList();
-            }    
-            ViewBag.Students = students;
-            ViewBag.searchName = searchName;
-            ViewBag.searchGender = searchGender;
-            ViewBag.searchFromDate = searchFromDate;
-            return View();
+            }
+
+            StudentsViewModels studentsViewModel = new StudentsViewModels(students, searchName: searchName, searchGender: searchGender, searchDOB: searchFromDate, isSearchView: true);
+            return View(studentsViewModel);
         }
 
         // GET: Create

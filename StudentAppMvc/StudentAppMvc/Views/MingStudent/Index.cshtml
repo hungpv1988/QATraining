@@ -1,11 +1,5 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
-    ViewBag.Title = "Student Management";
-    List<Student> students = ViewBag.Students!;
-    string searchName = !String.IsNullOrEmpty(ViewBag.searchName) ? ViewBag.searchName.ToString() : "";
-}
+﻿@using StudentAppMvc.Models.ViewModels
+@model StudentsViewModels
 
 
 <h2>This page is for Ming's Student Management</h2>
@@ -17,7 +11,7 @@
             <div class="form-group">
                 <label class="control-label">Search for Student</label>
                 @{
-                    <input id="searchName" name="searchName" class="form-control" data-val="true" data-val-required="Please input name to search"  value = @searchName></input>
+                    <input id="searchName" name="searchName" class="form-control" data-val="true" data-val-required="Please input name to search"  value = @Model.SearchName></input>
                     <span class="text-danger field-validation-valid" data-valmsg-for="searchName" data-valmsg-replace="true"></span>
                 }
             </div>
@@ -30,7 +24,7 @@
 <br />
 <h4>Welcome students: </h4>
 <br />
-@await Html.PartialAsync("_studentList", new {Students = students})
+@await Html.PartialAsync("_studentListUpdate", @Model)
 <br />
 <div>
     <a asp-action="Create">Create Student</a> | <a asp-action="Index" asp-route-latestCount=5>Get last 5 students</a> | <a asp-action="Index">Get all students</a>

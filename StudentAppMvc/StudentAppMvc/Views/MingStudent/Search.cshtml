@@ -1,14 +1,5 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
-    ViewBag.Title = "Student Search";
-    List<Student> students = ViewBag.Students!;
-    string searchName = !String.IsNullOrEmpty(ViewBag.searchName) ? ViewBag.searchName.ToString() : "";
-    string searchGender = !String.IsNullOrEmpty(ViewBag.searchGender) ? ViewBag.searchGender : "";
-    string searchFromDate = !String.IsNullOrEmpty(ViewBag.searchFromDate) ? ViewBag.searchFromDate.ToString() : "";
-}
-
+﻿@using StudentAppMvc.Models.ViewModels
+@model StudentsViewModels
 
 <h2>This page is for Ming's Student Search</h2>
 <hr />
@@ -18,35 +9,41 @@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label class="control-label">Search for Name</label>
-                <input id="searchName" name="searchName" class="form-control" value=@searchName></input>
+                <input id="searchName" name="searchName" class="form-control" value=@Model.SearchName></input>
                 <label class="control-label">(add) Search for gender</label>
                 <select name="searchGender" class="form-control">
                     @{
-                        switch(searchGender)
+                        if (@Model.SearchGender == null)
                         {
-                            case "true":
-                                <option value="">-</option>
-                                <option value="true" selected = "selected">Male</option>
-                                <option value="false">Female</option>
-                                break;
-                            case "false":
-                                <option value="">-</option>
-                                <option value="true" >Male</option>
-                                <option value="false" selected = "selected">Female</option>
-                                break;
-                           default:
-                                <option value="" selected = "selected">-</option>
-                                <option value="true" >Male</option>
-                                <option value="false" >Female</option>
-                                break;
+                            <option value="" selected="selected">-</option>
+                            <option value="true">Male</option>
+                            <option value="false">Female</option>
+                        }
+                        else
+                        {
+                            switch (@Model.SearchGender.ToString())
+                            {
+                                case "true":
+                                    <option value="">-</option>
+                                    <option value="true" selected="selected">Male</option>
+                                    <option value="false">Female</option>
+                                    break;
+                                case "false":
+                                    <option value="">-</option>
+                                    <option value="true">Male</option>
+                                    <option value="false" selected="selected">Female</option>
+                                    break;
+                                default:
+                                    <option value="" selected="selected">-</option>
+                                    <option value="true">Male</option>
+                                    <option value="false">Female</option>
+                                    break;
+                            }
                         }
                     }
-@*                    <option value="">-</option>
-                    <option value="true">Male</option>
-                    <option value="false">Female</option>*@
                 </select>
                 <label class="control-label">(add) Search for BOD from</label>
-                <input type="date" id="searchFromDate" name="searchFromDate" class="form-control" value=@searchFromDate></input>
+                <input type="date" id="searchFromDate" name="searchFromDate" class="form-control" value=@Model.SearchDOB></input>
             </div>
             <div class="form-group">
                 <input type="submit" value="Search" class="btn btn-primary" />
@@ -55,7 +52,7 @@
     </div>
 </div>
 <br />
-@await Html.PartialAsync("_studentList", new {Students = students, searchName = searchName})
+@await Html.PartialAsync("_studentListUpdate", @Model)
 <br />
 <div>
     <a asp-action="Index">Back to management</a>

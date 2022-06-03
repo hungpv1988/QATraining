@@ -1,0 +1,59 @@
+﻿@using StudentAppMvc.Models.ViewModels
+@model StudentsViewModels
+
+
+<h4>This is the updated partial view data using ViewModels: </h4>
+<br />
+<table>
+    <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Description</th>
+        <th>DateOfBirth</th>
+        <th>Gender</th>
+        <th>Email</th>
+        <th>StudentAccount</th>
+    </tr>
+    @{
+        if (@Model.StudentList.Count == 0)
+        {
+            <tr>
+                <td colspan=7>No student found.</td>
+            </tr>
+        }
+        foreach (Student student in @Model.StudentList)
+        {
+            string gender = student.Gender ? "Male" : "Female";
+            <tr>
+                <td>@student.Id</td>
+                @{
+                    if (!String.IsNullOrEmpty(@Model.SearchName) && student.Name.Contains(@Model.SearchName, StringComparison.OrdinalIgnoreCase))
+                    {
+                        <td class="found">@student.Name</td>
+                    }
+                    else
+                    {
+                        <td>@student.Name</td>
+                    }
+                }
+                <td>@student.Description</td>
+                <td>@student.DateOfBirth?.ToString("MM/dd/yy")</td>
+                <td>@gender</td>
+                <td>@student.Email</td>
+                <td>@student.StudentAccount</td>
+                @{
+                    if (@Model.IsSearchView)
+                    {
+                        <td>
+
+                            <a asp-action="Edit" asp-route-id="@student.Id">Edit</a> |
+                            <a asp-action="Detail" asp-route-id="@student.Id">Detail</a> |
+                            <a asp-action="Delete" asp-route-id="@student.Id" onclick="return confirm('Are you sure to delete this student?');">Delete</a>
+                        </td>
+                    }
+                }
+
+            </tr>
+        }
+    }
+</table>
