@@ -1,6 +1,4 @@
-﻿// Licensed to the .NET Foundation under one or more agreements.
-// The .NET Foundation licenses this file to you under the MIT license.
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using StudentAppMvc.Filter;
 using StudentAppMvc.Models;
 using StudentAppMvc.Models.ViewModels;
@@ -29,7 +27,7 @@ namespace StudentAppMvc.Controllers
         // Default view for GET list
         public IActionResult Index(int latestCount = 0)
         {
-            StudentsViewModels studentsViewModel = new StudentsViewModels(_students);
+            StudentListViewModel studentsViewModel = new StudentListViewModel(_students);
             return View(studentsViewModel);
         }
         
@@ -54,7 +52,7 @@ namespace StudentAppMvc.Controllers
                 students = students.Where(s => s.DateOfBirth > fromDate).ToList();
             }
 
-            StudentsViewModels studentsViewModel = new StudentsViewModels(students, searchName: searchName, searchGender: searchGender, searchDOB: searchFromDate, isSearchView: true);
+            StudentListViewModel studentsViewModel = new StudentListViewModel(students, searchName: searchName, searchGender: searchGender, searchDOB: searchFromDate, isSearchView: true);
             return View(studentsViewModel);
         }
 

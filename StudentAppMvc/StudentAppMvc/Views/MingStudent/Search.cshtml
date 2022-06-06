@@ -1,5 +1,5 @@
 ﻿@using StudentAppMvc.Models.ViewModels
-@model StudentsViewModels
+@model StudentListViewModel
 
 <h2>This page is for Ming's Student Search</h2>
 <hr />
@@ -52,7 +52,7 @@
     </div>
 </div>
 <br />
-@await Html.PartialAsync("_studentListUpdate", @Model)
+@await Html.PartialAsync("_studentList", @Model)
 <br />
 <div>
     <a asp-action="Index">Back to management</a>

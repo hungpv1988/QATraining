@@ -1,5 +1,5 @@
 ﻿@using StudentAppMvc.Models.ViewModels
-@model StudentsViewModels
+@model StudentListViewModel
 
 
 <h2>This page is for Ming's Student Management</h2>
@@ -24,7 +24,7 @@
 <br />
 <h4>Welcome students: </h4>
 <br />
-@await Html.PartialAsync("_studentListUpdate", @Model)
+@await Html.PartialAsync("_studentList", @Model)
 <br />
 <div>
     <a asp-action="Create">Create Student</a> | <a asp-action="Index" asp-route-latestCount=5>Get last 5 students</a> | <a asp-action="Index">Get all students</a>

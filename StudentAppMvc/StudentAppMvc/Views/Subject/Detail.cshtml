@@ -1,0 +1,54 @@
+﻿@model StudentAppMvc.Models.Student
+
+@{
+}
+
+<h1>Student Details</h1>
+
+<hr />
+<dl class = "row">
+    <dt class="col-sm-2">
+        <label asp-for="Name" class="control-label"></label>
+    </dt>
+    <dd class="col-sm-10">
+        @Model.Name
+    </dd>
+    <dt class="col-sm-2">
+        <label asp-for="Description" class="control-label"></label>
+    </dt>
+    <dd class="col-sm-10">
+        @Model.Description
+    </dd>
+    <dt class="col-sm-2">
+        <label asp-for="DateOfBirth" class="control-label"></label>
+    </dt>
+    <dd class="col-sm-10">
+        @Model.DateOfBirth
+    </dd>
+    <dt class="col-sm-2">
+        <label asp-for="Gender" class="control-label"></label>
+    </dt>
+    @{
+        string gender = Model.Gender ? "Male" : "Female";
+    }
+    <dd class="col-sm-10">
+        @gender
+    </dd>
+     <dt class="col-sm-2">
+        <label asp-for="Email" class="control-label"></label>
+    </dt>
+    <dd class="col-sm-10">
+        @Model.Email
+    </dd>
+    <dt class="col-sm-2">
+        <label asp-for="StudentAccount" class="control-label"></label>
+    </dt>
+    <dd class="col-sm-10">
+        @Model.StudentAccount
+    </dd>
+</dl>
+<br />
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>

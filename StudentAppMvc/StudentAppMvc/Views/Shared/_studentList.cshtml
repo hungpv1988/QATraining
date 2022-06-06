@@ -1,13 +1,8 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
-    List<Student> students = ViewBag.Students!;
-    string searchName = ViewBag.searchName;
-}
+﻿@using StudentAppMvc.Models.ViewModels
+@model StudentListViewModel
 
 
-<h4>This is the partial view data: </h4>
+<h4>This is the updated partial view data using ViewModels: </h4>
 <br />
 <table>
     <tr>
@@ -20,19 +15,19 @@
         <th>StudentAccount</th>
     </tr>
     @{
-        if (students.Count == 0)
+        if (@Model.StudentList.Count == 0)
         {
             <tr>
                 <td colspan=7>No student found.</td>
             </tr>
         }
-        foreach (Student student in students)
+        foreach (Student student in @Model.StudentList)
         {
             string gender = student.Gender ? "Male" : "Female";
             <tr>
                 <td>@student.Id</td>
                 @{
-                    if (!String.IsNullOrEmpty(searchName) && student.Name.Contains(searchName, StringComparison.OrdinalIgnoreCase))
+                    if (!String.IsNullOrEmpty(@Model.SearchName) && student.Name.Contains(@Model.SearchName, StringComparison.OrdinalIgnoreCase))
                     {
                         <td class="found">@student.Name</td>
                     }
@@ -46,11 +41,18 @@
                 <td>@gender</td>
                 <td>@student.Email</td>
                 <td>@student.StudentAccount</td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@student.Id">Edit</a> |
-                    <a asp-action="Detail" asp-route-id="@student.Id">Detail</a> |
-                    <a asp-action="Delete" asp-route-id="@student.Id" onclick="return confirm('Are you sure to delete this student?');">Delete</a>
-                </td>
+                @{
+                    if (@Model.IsSearchView)
+                    {
+                        <td>
+
+                            <a asp-action="Edit" asp-route-id="@student.Id">Edit</a> |
+                            <a asp-action="Detail" asp-route-id="@student.Id">Detail</a> |
+                            <a asp-action="Delete" asp-route-id="@student.Id" onclick="return confirm('Are you sure to delete this student?');">Delete</a>
+                        </td>
+                    }
+                }
+
             </tr>
         }
     }

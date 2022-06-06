@@ -4,9 +4,9 @@ using System.ComponentModel.DataAnnotations;
 
 namespace StudentAppMvc.Models.ViewModels
 {
-    public class StudentsViewModels
+    public class StudentListViewModel
     {
-        public StudentsViewModels(List<Student> studentList, 
+        public StudentListViewModel(List<Student> studentList, 
             int top = 5, 
             int page = 1, 
             string searchName = "", 

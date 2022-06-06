@@ -1,0 +1,43 @@
+﻿<h2>This page is for Ming's Teacher Management</h2>
+<hr />
+
+@{
+    ViewBag.Title = "Teacher Management";
+    List<Teacher> teachers = ViewBag.Teachers!;
+}
+
+<br />
+<table>
+    <tr>
+        <th>Name</th>
+        <th>Description</th>
+        <th></th>
+    </tr>
+    @{
+        if (teachers.Count == 0)
+        {
+            <tr>
+                <td colspan=7>No Teacher found.</td>
+            </tr>
+        }
+        else foreach (Teacher teacher in teachers)
+        {
+            <tr>
+                <td>@teacher.Name</td>
+                <td>@teacher.Description</td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@teacher.Id">Edit</a> |
+                    <a asp-action="Detail" asp-route-id="@teacher.Id">Detail</a> |
+                    <a asp-action="Delete" asp-route-id="@teacher.Id" onclick="return confirm('Are you sure to delete this teacher?');">Delete</a>
+                </td>
+            </tr>
+        }
+    }
+</table>
+<br />
+<div>
+    <a asp-action="Create">Create Teacher</a> | <a asp-controller="MingStudent" asp-action="Index">Back to Student Management</a> 
+</div>
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

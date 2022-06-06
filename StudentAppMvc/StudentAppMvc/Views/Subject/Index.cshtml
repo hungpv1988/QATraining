@@ -1,0 +1,45 @@
+﻿<h2>This page is for Ming's Subject Management</h2>
+<hr />
+
+@{
+    ViewBag.Title = "Subject Management";
+    List<Subject> subjects = ViewBag.Subjects!;
+}
+
+<br />
+<table>
+    <tr>
+        <th>Name</th>
+        <th>Description</th>
+        <th></th>
+    </tr>
+    @{
+        if (subjects.Count == 0)
+        {
+            <tr>
+                <td colspan=7>No subject found.</td>
+            </tr>
+        }
+        else foreach (Subject subject in subjects)
+        {
+            <tr>
+                <td>@subject.Name</td>
+                <td>@subject.Description</td>
+                <td>
+
+                    <a asp-action="Edit" asp-route-id="@subject.Id">Edit</a> |
+                    <a asp-action="Detail" asp-route-id="@subject.Id">Detail</a> |
+                    <a asp-action="Delete" asp-route-id="@subject.Id" onclick="return confirm('Are you sure to delete this subject?');">Delete</a>
+                </td>
+
+            </tr>
+        }
+    }
+</table>
+<br />
+<div>
+    <a asp-action="Create">Create Subject</a> | <a asp-controller="MingStudent" asp-action="Index">Back to Student Management</a> 
+</div>
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
