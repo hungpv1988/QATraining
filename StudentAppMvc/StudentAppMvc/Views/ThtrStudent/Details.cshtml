@@ -1,0 +1,47 @@
+﻿@*@model StudentAppMvc.Models.Student*@
+@{
+    ViewData["Title"] = "Details";
+    Student student = ViewBag.Student;
+    //ThtrStudent student = (ThtrStudent)ViewData["student"]!;
+     Layout = "~/Views/Shared/_Layout.cshtml";
+    
+}
+
+<h1>Details</h1>
+<div>
+    <h3>Student @student.Name</h3>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Description</th>
+                <th>Department</th>
+                <th>Email</th>
+                <th>Account</th>
+                <th>Date of birth</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>@student.Id</td>
+                <td>@student.Name</td>
+                <td>@student.Description</td>
+                <td>@student.Department</td>
+                <td>@student.Email</td>
+                <td>@student.StudentAccount</td>
+            </tr>
+    </tbody>
+    </table>
+   @* <h3>Student @student.Name</h3>*@
+  @* @Html.DisplayFor(model => model.Name)*@
+</div>
+<div>
+    @*<a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> 
+    <a asp-action="Detail" asp-route-id="@Model.Id">Detail</a>
+    <a asp-action="Delete" asp-route-id="@Model.Id">Delete</a> *@
+     <a asp-action="Edit" asp-route-id="@student.Id">Edit</a> 
+    <a asp-action="Detail" asp-route-id="@student.Id">Detail</a>
+    <a asp-action="Delete" asp-route-id="@student.Id">Delete</a> 
+    <a asp-action="Index">Back to List</a>
+</div>
