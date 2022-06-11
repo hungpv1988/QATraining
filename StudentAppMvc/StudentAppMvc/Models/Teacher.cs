@@ -27,7 +27,5 @@ namespace StudentAppMvc.Models
         public string? Description { get; set; }
 
         public bool Gender { get; set; }
-
-        public List<string> Subjects { get; set; } = new List<string>();
     }
 }

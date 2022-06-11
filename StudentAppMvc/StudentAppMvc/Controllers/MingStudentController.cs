@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using StudentAppMvc.Data;
 using StudentAppMvc.Filter;
 using StudentAppMvc.Models;
 using StudentAppMvc.Models.ViewModels;
@@ -10,36 +11,25 @@ namespace StudentAppMvc.Controllers
     [LogFilter]
     public class MingStudentController : Controller
     {
-        private static List<Student>? _students = new List<Student>();
         public MingStudentController()
         {
-            if (_students?.Count == 0)
-            {
-                _students.Add(new Student(_students.Count + 1, "Minh", "Sample student", DateTime.Now, false, "minh@hut.edu" ));
-                _students.Add(new Student(_students.Count + 1, "Bảo Minh", "Sample student", DateTime.Now.Subtract(TimeSpan.FromDays(1000)), true, "bao@hut.edu" ));
-                _students.Add(new Student(_students.Count + 1, "Ngọc Minh", "Sample student", DateTime.Now.Subtract(TimeSpan.FromDays(700)), false, "ngoc@hut.edu" ));
-                _students.Add(new Student(_students.Count + 1, "Kang minh", "Sample student", DateTime.Now.Subtract(TimeSpan.FromDays(300)), true, "kang@hut.edu" ));
-                _students.Add(new Student(_students.Count + 1, "Khanh", "Sample student", DateTime.Now, false, "khanh@hut.edu" ));
-                _students.Add(new Student(_students.Count + 1, "Hi", "Sample student", DateTime.Now, false, "hi@hut.edu" ));
-            }   
         }
 
         // Default view for GET list
         public IActionResult Index(int latestCount = 0)
         {
-            StudentListViewModel studentsViewModel = new StudentListViewModel(_students);
+            StudentListViewModel studentsViewModel = new StudentListViewModel(MyData.Students);
             return View(studentsViewModel);
         }
         
-        // Default view for GET list
-        public IActionResult Search(string searchName = "", string searchGender = "", string searchFromDate = "", string searchToDate = "")
+        public IActionResult Search(string searchName = "", string searchGender = "", string searchFromDate = "")
         {
-            List<Student> students = _students;
+            List<Student> students = MyData.Students;
             
             if (!string.IsNullOrEmpty(searchName))
             {
                 searchName = searchName.Trim();
-                students = _students.Where(s => s.Name.Contains(searchName, StringComparison.OrdinalIgnoreCase)).ToList();
+                students = MyData.Students.Where(s => s.Name.Contains(searchName, StringComparison.OrdinalIgnoreCase)).ToList();
             }
             if (!string.IsNullOrEmpty(searchGender))
             {
@@ -56,35 +46,45 @@ namespace StudentAppMvc.Controllers
             return View(studentsViewModel);
         }
 
+        #region Create Student
         // GET: Create
         public ActionResult Create()
         {
-            return View();
+            StudentViewModel studentViewModel = new StudentViewModel(null);
+            return View(studentViewModel);
         }
 
         // POST: Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(Student student)
+        public ActionResult Create(StudentViewModel studentViewModel)
         {
+            var _students = MyData.Students;
             try
             {
-                if (_students == null)
-                {
-                    _students = new List<Student>();
-                }
-
                 // Check if email/ student account is existing, return same view with error message
-                if (_students.Any(s => s.Email.Equals(student.Email)))
+                if (_students.Any(s => s.Email.Equals(studentViewModel.Email)))
                     ModelState.AddModelError("Email", "This email address is existing.");
-                if (!string.IsNullOrEmpty(student.StudentAccount) && _students.Any(s => s.StudentAccount.Equals(student.StudentAccount)))
+                if (!string.IsNullOrEmpty(studentViewModel.StudentAccount) && _students.Any(s => s.StudentAccount.Equals(studentViewModel.StudentAccount)))
                     ModelState.AddModelError("StudentAccount", "This student account is existing.");
 
                 if (ModelState.ErrorCount > 0)
-                    return View(student);
+                    return View(studentViewModel);
 
-                student.Id = _students.Count + 1;
-                _students.Add(student);
+                Student newStudent = new Student(_students.Count+1, studentViewModel.Name, studentViewModel.Description, studentViewModel.DateOfBirth, studentViewModel.Gender, studentViewModel.Email, studentViewModel.StudentAccount);
+                newStudent.AssignedSubjectAndTeachers = new Dictionary<int, int>();
+                foreach(SelectedSubjectViewModel subject in studentViewModel.SelectedSubjects)
+                {
+                    if(subject.Selected)
+                    {
+                        if (subject.TeacherId == null)
+                            newStudent.AssignedSubjectAndTeachers.Add(subject.Id, -1);
+                        else
+                            newStudent.AssignedSubjectAndTeachers.Add(subject.Id, int.Parse(subject.TeacherId));
+                    }    
+                }    
+
+                _students.Add(newStudent);
 
                 return RedirectToAction(nameof(Index));
             }
@@ -93,67 +93,81 @@ namespace StudentAppMvc.Controllers
                 return View();
             }
         }
+        #endregion
 
         // GET: Detail
         public ActionResult Detail(int id)
         {
-            Student student = _students.FirstOrDefault(s => s.Id == id);
-            return View(student);
+            StudentViewModel studentViewModel = new StudentViewModel(id);
+            return View(studentViewModel);
         }
 
+        #region Edit Student
         // GET: Create
         public ActionResult Edit(int id)
         {
-            Student student = _students.FirstOrDefault(s => s.Id == id);
-            return View(student);
+            StudentViewModel studentViewModel = new StudentViewModel(id);
+            return View(studentViewModel);
         }
 
         // POST: Edit
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(Student student)
+        public ActionResult Edit(StudentViewModel studentViewModel)
         {
+            var _students = MyData.Students;
             try
             {
-                Student editStudent = _students.FirstOrDefault(s => s.Id == student.Id);
+                Student editStudent = _students.FirstOrDefault(s => s.Id == studentViewModel.Id);
                 // Check if this student is avalable for update
                 if (editStudent == null)
                 {
                     ModelState.AddModelError("Name", "This student is not avaiable for editing. Maybe it was deleted from list.");
-                    return View(student);
+                    return View(studentViewModel);
                 }    
 
                 // Check if email/ student account is used by another student
-                if (_students.Any(s => s.Email.Equals(student.Email) && s.Id != student.Id))
+                if (_students.Any(s => s.Email.Equals(studentViewModel.Email) && s.Id != studentViewModel.Id))
                     ModelState.AddModelError("Email", "This email address is existing.");
-                if (!string.IsNullOrEmpty(student.StudentAccount) && (_students.Any(s => s.StudentAccount.Equals(student.StudentAccount) && s.Id != student.Id)))
+                if (!string.IsNullOrEmpty(studentViewModel.StudentAccount) && (_students.Any(s => s.StudentAccount.Equals(studentViewModel.StudentAccount) && s.Id != studentViewModel.Id)))
                     ModelState.AddModelError("StudentAccount", "This student account is existing.");
 
                 if (ModelState.ErrorCount > 0)
-                    return View(student);
+                    return View(studentViewModel);
 
                 // Update student
-                editStudent.Name = student.Name;
-                editStudent.Email = student.Email;
-                editStudent.Gender = student.Gender;
-                editStudent.Description = student.Description;
-                editStudent.DateOfBirth = student.DateOfBirth;
-                editStudent.StudentAccount = student.StudentAccount;
+                editStudent.Name = studentViewModel.Name;
+                editStudent.Email = studentViewModel.Email;
+                editStudent.Gender = studentViewModel.Gender;
+                editStudent.Description = studentViewModel.Description;
+                editStudent.DateOfBirth = studentViewModel.DateOfBirth;
+                editStudent.StudentAccount = studentViewModel.StudentAccount;
 
-                //int index = _students.IndexOf(editStudent);
-                //_students[index] = student;
+                editStudent.AssignedSubjectAndTeachers = new Dictionary<int, int>();
+                foreach (SelectedSubjectViewModel subject in studentViewModel.SelectedSubjects)
+                {
+                    if (subject.Selected)
+                    {
+                        if (subject.TeacherId == null)
+                            editStudent.AssignedSubjectAndTeachers.Add(subject.Id, -1);
+                        else
+                            editStudent.AssignedSubjectAndTeachers.Add(subject.Id, int.Parse(subject.TeacherId));
+                    }
+                }
 
-                return RedirectToAction(nameof(Detail), new { id = student.Id } );
+                return RedirectToAction(nameof(Detail), new { id = editStudent.Id } );
             }
             catch
             {
                 return View();
             }
         }
+        #endregion
 
         // POST: Delete
         public ActionResult Delete(int id)
         {
+            var _students = MyData.Students;
             try
             {
                 Student editStudent = _students.FirstOrDefault(s => s.Id == id);

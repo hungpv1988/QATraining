@@ -16,6 +16,8 @@ namespace StudentAppMvc.Models
             Email = email;
             if(string.IsNullOrEmpty(studentAccount))
                 StudentAccount = $"HUT{id}";
+            else
+                StudentAccount = studentAccount;
         }
 
         public Student()
@@ -26,7 +28,7 @@ namespace StudentAppMvc.Models
 
         [Display(Name = "Student Name")]
         [StringLength(60, MinimumLength = 1)]
-        [Required(ErrorMessage ="Please input Student name")]
+        [Required(ErrorMessage = "Please input Student name")]
         public string Name { get; set; }
 
         public string? Description { get; set; }
@@ -43,5 +45,7 @@ namespace StudentAppMvc.Models
 
         [StringLength(5)]
         public string? StudentAccount { get; set; }
+
+        public Dictionary<int, int> AssignedSubjectAndTeachers = new Dictionary<int, int>();
     }
 }

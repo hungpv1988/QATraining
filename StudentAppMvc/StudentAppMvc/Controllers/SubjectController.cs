@@ -1,6 +1,7 @@
 ﻿// Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 using Microsoft.AspNetCore.Mvc;
+using StudentAppMvc.Data;
 using StudentAppMvc.Filter;
 using StudentAppMvc.Models;
 using StudentAppMvc.Models.ViewModels;
@@ -14,21 +15,13 @@ namespace StudentAppMvc.Controllers
         private static List<Subject>? _subjects = new List<Subject>();
         public SubjectController()
         {
-            if (_subjects?.Count == 0)
-            {
-                _subjects.Add(new Subject(_subjects.Count + 1, "Tính toán khoa học", "Tính toán khoa học"));
-                _subjects.Add(new Subject(_subjects.Count + 1, "Điện tử số", "Điện tử số"));
-                _subjects.Add(new Subject(_subjects.Count + 1, "Vi xử lý", "Vi xử lý"));
-                _subjects.Add(new Subject(_subjects.Count + 1, "Trí tuệ nhân tạo", "Trí tuệ nhân tạo"));
-                _subjects.Add(new Subject(_subjects.Count + 1, "Xử lý ảnh", "Xử lý ảnh"));
-                _subjects.Add(new Subject(_subjects.Count + 1, "Lập trình hướng đối tượng", "Lập trình hướng đối tượng"));
-            }
+            
         }
 
         // Default view for GET list
         public IActionResult Index()
         {
-            ViewBag.Subjects = _subjects;
+            ViewBag.Subjects = MyData.Subjects;
             return View();
         }
 
@@ -36,30 +29,34 @@ namespace StudentAppMvc.Controllers
         // GET: Create
         public ActionResult Create()
         {
-            SubjectViewModel subjectViewModel = new SubjectViewModel(new TeacherController().Teachers);
+            SubjectViewModel subjectViewModel = new SubjectViewModel(null);
             return View(subjectViewModel);
         }
 
         // POST: Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(Subject subject)
+        public ActionResult Create(SubjectViewModel subjectViewModel)
         {
+            var _subjects = MyData.Subjects;
             try
             {
-                if (_subjects == null)
-                {
-                    _subjects = new List<Subject>();
-                }
-
                 // Check if email/ student account is existing, return same view with error message
-                if (_subjects.Any(s => s.Name.Equals(subject.Name)))
+                if (_subjects.Any(s => s.Name.Equals(subjectViewModel.Name)))
                     ModelState.AddModelError("Name", "This subject name is existing.");
 
                 if (ModelState.ErrorCount > 0)
-                    return View(subject);
+                    return View(subjectViewModel);
 
+                Subject subject = new Subject();
                 subject.Id = _subjects.Count + 1;
+                subject.Name = subjectViewModel.Name;
+                subject.Description = subjectViewModel.Description;
+                foreach(SelectedTeacherViewModel t in subjectViewModel.SelectedTeachers)
+                {
+                    if (t.Selected)
+                        subject.AssignedTeachers.Add(t.Id);
+                }    
                 _subjects.Add(subject);
 
                 return RedirectToAction(nameof(Index));
@@ -73,42 +70,45 @@ namespace StudentAppMvc.Controllers
         // GET: Detail
         public ActionResult Detail(int id)
         {
-            Subject subject = _subjects.FirstOrDefault(s => s.Id == id);
-            return View(subject);
+            SubjectViewModel subjectViewModel = new SubjectViewModel(id);
+            return View(subjectViewModel);
         }
 
         // GET: Create
         public ActionResult Edit(int id)
         {
-            Subject subject = _subjects.FirstOrDefault(s => s.Id == id);
-            return View(subject);
+            SubjectViewModel subjectViewModel = new SubjectViewModel(id);
+            return View(subjectViewModel);
         }
 
         // POST: Edit
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(Subject subject)
+        public ActionResult Edit(SubjectViewModel subjectViewModel)
         {
+            var _subjects = MyData.Subjects;
             try
             {
-                Subject editStudent = _subjects.FirstOrDefault(s => s.Id == subject.Id);
+                Subject editSubject = _subjects.FirstOrDefault(s => s.Id == subjectViewModel.Id);
                 // Check if this student is avalable for update
-                if (editStudent == null)
+                if (editSubject == null)
                 {
                     ModelState.AddModelError("Name", "This subject is not avaiable for editing. Maybe it was deleted from list.");
-                    return View(subject);
+                    return View(subjectViewModel);
                 }
 
-                // Check if email/ student account is used by another student
-                if (_subjects.Any(s => s.Name.Equals(subject.Name) && s.Id != subject.Id))
-                    ModelState.AddModelError("Name", "This subject name is existing.");
-
                 if (ModelState.ErrorCount > 0)
-                    return View(subject);
+                    return View(subjectViewModel);
 
                 // Update student
-                editStudent.Name = subject.Name;
-                editStudent.Description = subject.Description;
+                editSubject.Name = subjectViewModel.Name;
+                editSubject.Description = subjectViewModel.Description;
+                editSubject.AssignedTeachers = new List<int>();
+                foreach (SelectedTeacherViewModel t in subjectViewModel.SelectedTeachers)
+                {
+                    if (t.Selected)
+                        editSubject.AssignedTeachers.Add(t.Id);
+                }
 
                 return RedirectToAction(nameof(Index));
             }
@@ -121,6 +121,7 @@ namespace StudentAppMvc.Controllers
         // POST: Delete
         public ActionResult Delete(int id)
         {
+            var _subjects = MyData.Subjects;
             try
             {
                 Subject editSubject = _subjects.FirstOrDefault(s => s.Id == id);

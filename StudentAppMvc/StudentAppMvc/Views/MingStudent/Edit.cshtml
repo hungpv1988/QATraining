@@ -1,4 +1,4 @@
-﻿@model StudentAppMvc.Models.Student
+﻿@model StudentAppMvc.Models.ViewModels.StudentViewModel
 
 @{
     ViewData["Title"] = "Edit Student";
@@ -43,6 +43,19 @@
                 <label asp-for="StudentAccount" class="control-label"></label>
                 <input asp-for="StudentAccount" class="form-control" />
                 <span asp-validation-for="StudentAccount" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="SelectedSubjects" class="control-label"></label>
+                @for (int i = 0; i < Model.SelectedSubjects.Count(); i++)
+                {
+                    <div class="form-group">
+                        <input asp-for="SelectedSubjects[i].Selected" type="checkbox" selected = "@Model.SelectedSubjects[i].Selected" />
+                        <label asp-for="SelectedSubjects[i].Name">@Model.SelectedSubjects[i].Name</label>
+                        <input type="hidden" asp-for="SelectedSubjects[i].Id" />
+                        <input type="hidden" asp-for="SelectedSubjects[i].Name" />
+                        @Html.DropDownListFor(m => m.SelectedSubjects[i].TeacherId, @Model.SelectedSubjects[i].SelectTeacherList, null, new { @class = "css-class" })
+                    </div>
+                }
             </div>
             <br />
             <div class="form-group">

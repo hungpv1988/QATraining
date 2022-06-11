@@ -1,6 +1,7 @@
 ﻿// Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 using Microsoft.AspNetCore.Mvc;
+using StudentAppMvc.Data;
 using StudentAppMvc.Filter;
 using StudentAppMvc.Models;
 using StudentAppMvc.Models.ViewModels;
@@ -12,28 +13,17 @@ namespace StudentAppMvc.Controllers
     [LogFilter]
     public class TeacherController : Controller
     {
-        private static List<Teacher>? _teachers = new List<Teacher>();
-
-        public List<Teacher> Teachers { get => _teachers; }
+        public List<Teacher> Teachers { get => MyData.Teachers; }
 
         public TeacherController()
         {
-            if (_teachers?.Count == 0)
-            {
-                _teachers.Add(new Teacher(_teachers.Count + 1, "Nguyễn Đức Nghĩa", "KHMT"));
-                _teachers.Add(new Teacher(_teachers.Count + 1, "Trịnh Văn Loan", "KHMT"));
-                _teachers.Add(new Teacher(_teachers.Count + 1, "Văn Thế Minh", "KHMT"));
-                _teachers.Add(new Teacher(_teachers.Count + 1, "Nguyễn Thanh Thủy", "HTTT"));
-                _teachers.Add(new Teacher(_teachers.Count + 1, "Nguyễn Linh Giang", "MTT"));
-                _teachers.Add(new Teacher(_teachers.Count + 1, "Huỳnh Quyết Thắng", "CNPM"));
-                _teachers.Add(new Teacher(_teachers.Count + 1, "Đỗ Văn Uy", "HTTT"));
-            }
+            
         }
 
         // Default view for GET list
         public IActionResult Index()
         {
-            ViewBag.Teachers = _teachers;
+            ViewBag.Teachers = Teachers;
             return View();
         }
 
@@ -51,20 +41,15 @@ namespace StudentAppMvc.Controllers
         {
             try
             {
-                if (_teachers == null)
-                {
-                    _teachers = new List<Teacher>();
-                }
-
                 // Check if email/ student account is existing, return same view with error message
-                if (_teachers.Any(s => s.Name.Equals(teacher.Name)))
+                if (Teachers.Any(s => s.Name.Equals(teacher.Name)))
                     ModelState.AddModelError("Name", "This teacher name is existing.");
 
                 if (ModelState.ErrorCount > 0)
                     return View(teacher);
 
-                teacher.Id = _teachers.Count + 1;
-                _teachers.Add(teacher);
+                teacher.Id = Teachers.Count + 1;
+                Teachers.Add(teacher);
 
                 return RedirectToAction(nameof(Index));
             }
@@ -77,14 +62,14 @@ namespace StudentAppMvc.Controllers
         // GET: Detail
         public ActionResult Detail(int id)
         {
-            Teacher teacher = _teachers.FirstOrDefault(s => s.Id == id);
+            Teacher teacher = Teachers.FirstOrDefault(s => s.Id == id);
             return View(teacher);
         }
 
         // GET: Create
         public ActionResult Edit(int id)
         {
-            Teacher teacher = _teachers.FirstOrDefault(s => s.Id == id);
+            Teacher teacher = Teachers.FirstOrDefault(s => s.Id == id);
             return View(teacher);
         }
 
@@ -95,7 +80,7 @@ namespace StudentAppMvc.Controllers
         {
             try
             {
-                Teacher editTeacher = _teachers.FirstOrDefault(s => s.Id == teacher.Id);
+                Teacher editTeacher = Teachers.FirstOrDefault(s => s.Id == teacher.Id);
                 // Check if this student is avalable for update
                 if (editTeacher == null)
                 {
@@ -104,7 +89,7 @@ namespace StudentAppMvc.Controllers
                 }
 
                 // Check if email/ student account is used by another student
-                if (_teachers.Any(s => s.Name.Equals(teacher.Name) && s.Id != teacher.Id))
+                if (Teachers.Any(s => s.Name.Equals(teacher.Name) && s.Id != teacher.Id))
                     ModelState.AddModelError("Name", "This teacher name is existing.");
 
                 if (ModelState.ErrorCount > 0)
@@ -127,7 +112,7 @@ namespace StudentAppMvc.Controllers
         {
             try
             {
-                Teacher editTeacher = _teachers.FirstOrDefault(s => s.Id == id);
+                Teacher editTeacher = Teachers.FirstOrDefault(s => s.Id == id);
                 // Check if this student is avalable for update
                 if (editTeacher == null)
                 {
@@ -137,8 +122,8 @@ namespace StudentAppMvc.Controllers
 
 
                 // Update student
-                int index = _teachers.IndexOf(editTeacher);
-                _teachers.RemoveAt(index);
+                int index = Teachers.IndexOf(editTeacher);
+                Teachers.RemoveAt(index);
 
                 return RedirectToAction(nameof(Index));
             }

@@ -1,4 +1,4 @@
-﻿@model StudentAppMvc.Models.Student
+﻿@model StudentAppMvc.Models.ViewModels.StudentViewModel
 
 @{
 }
@@ -6,26 +6,26 @@
 <h1>Student Details</h1>
 
 <hr />
-<dl class = "row">
-    <dt class="col-sm-2">
+<dl class="row">
+    <dt class="col-sm-3">
         <label asp-for="Name" class="control-label"></label>
     </dt>
     <dd class="col-sm-10">
         @Model.Name
     </dd>
-    <dt class="col-sm-2">
+    <dt class="col-sm-3">
         <label asp-for="Description" class="control-label"></label>
     </dt>
     <dd class="col-sm-10">
         @Model.Description
     </dd>
-    <dt class="col-sm-2">
+    <dt class="col-sm-3">
         <label asp-for="DateOfBirth" class="control-label"></label>
     </dt>
     <dd class="col-sm-10">
         @Model.DateOfBirth
     </dd>
-    <dt class="col-sm-2">
+    <dt class="col-sm-3">
         <label asp-for="Gender" class="control-label"></label>
     </dt>
     @{
@@ -34,17 +34,40 @@
     <dd class="col-sm-10">
         @gender
     </dd>
-     <dt class="col-sm-2">
+    <dt class="col-sm-3">
         <label asp-for="Email" class="control-label"></label>
     </dt>
     <dd class="col-sm-10">
         @Model.Email
     </dd>
-    <dt class="col-sm-2">
+    <dt class="col-sm-3">
         <label asp-for="StudentAccount" class="control-label"></label>
     </dt>
     <dd class="col-sm-10">
         @Model.StudentAccount
+    </dd>
+    <dt class="col-sm-3">
+        <label asp-for="AssignedSubjectAndTeacherNames" class="control-label"></label>
+    </dt>
+    <dd class="col-sm-10">
+        @{
+            if (Model.AssignedSubjectAndTeacherNames.Count == 0)
+            {
+                <span>No subject assigned.</span>
+            }
+            else
+            {
+                <ul>
+                    @{
+                        foreach (string subjectName in Model.AssignedSubjectAndTeacherNames.Keys)
+                        {
+                            <li>@subjectName - @Model.AssignedSubjectAndTeacherNames[subjectName]</li>
+                        }
+                    }
+                </ul>
+            }
+        }
+
     </dd>
 </dl>
 <br />

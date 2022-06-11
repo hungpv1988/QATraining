@@ -1,4 +1,4 @@
-﻿@model StudentAppMvc.Models.Student
+﻿@model StudentAppMvc.Models.ViewModels.StudentViewModel
 
 @{
     ViewData["Title"] = "Create Student";
@@ -44,6 +44,19 @@
                 <input asp-for="StudentAccount" class="form-control" />
                 <span asp-validation-for="StudentAccount" class="text-danger"></span>
             </div>
+            <div class="form-group">
+                <label asp-for="SelectedSubjects" class="control-label"></label>
+                @for (int i = 0; i < Model.SelectedSubjects.Count(); i++)
+                {
+                    <div class="form-group">
+                        <input asp-for="SelectedSubjects[i].Selected" type="checkbox" />
+                        <label asp-for="SelectedSubjects[i].Name">@Model.SelectedSubjects[i].Name</label>
+                        <input type="hidden" asp-for="SelectedSubjects[i].Id" />
+                        <input type="hidden" asp-for="SelectedSubjects[i].Name" />
+                        @Html.DropDownListFor(m => m.SelectedSubjects[i].TeacherId, @Model.SelectedSubjects[i].SelectTeacherList, null, new { @class = "css-class" })
+                    </div>
+                }
+            </div>
             <br />
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
@@ -58,5 +71,7 @@
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    }

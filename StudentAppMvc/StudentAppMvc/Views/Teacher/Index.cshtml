@@ -27,7 +27,6 @@
                 <td>@teacher.Description</td>
                 <td>
                     <a asp-action="Edit" asp-route-id="@teacher.Id">Edit</a> |
-                    <a asp-action="Detail" asp-route-id="@teacher.Id">Detail</a> |
                     <a asp-action="Delete" asp-route-id="@teacher.Id" onclick="return confirm('Are you sure to delete this teacher?');">Delete</a>
                 </td>
             </tr>

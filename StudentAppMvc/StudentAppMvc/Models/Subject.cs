@@ -11,12 +11,12 @@ namespace StudentAppMvc.Models
             Id = id;
             Name = name;
             Description = description;
-            AssignedTeachers.Add(1, "Nguyễn Đức Nghĩa");
+            AssignedTeachers.Add(1);
         }
 
         public Subject()
         {
-            AssignedTeachers.Add(1, "Nguyễn Đức Nghĩa");
+            
         }
 
         public int Id { get; set; }
@@ -28,6 +28,6 @@ namespace StudentAppMvc.Models
 
         public string? Description { get; set; }
 
-        public Dictionary<int, string> AssignedTeachers { get; set; } = new Dictionary<int, string>();
+        public List<int> AssignedTeachers { get; set; } = new List<int>();
     }
 }
