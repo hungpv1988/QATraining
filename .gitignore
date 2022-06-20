@@ -1,0 +1,8 @@
+#ignore bin
+StudentAppMvc/StudentAppMvc/bin
+
+#ignore obj
+StudentAppMvc/StudentAppMvc/obj
+
+#ignore .vs
+StudentAppMvc/.vs
