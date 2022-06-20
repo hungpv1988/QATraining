@@ -17,5 +17,7 @@ namespace StudentAppMvc.Data
             builder.Entity<Student>().ToTable("Student");
             base.OnModelCreating(builder);
         }
+
+        public DbSet<StudentAppMvc.Models.Department>? Department { get; set; }
     }
 }

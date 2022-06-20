@@ -1,2 +1,0 @@
-# QATraining
-QA training
