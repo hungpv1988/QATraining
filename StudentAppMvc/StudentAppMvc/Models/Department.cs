@@ -17,5 +17,7 @@ namespace StudentAppMvc.Models
         [Display(Name = "Description")]
         [Required(ErrorMessage = "Please input description of department")]
         public string Description { get; set; }
+
+        public List<Class>? Classes { get; set; }
     }
 }
