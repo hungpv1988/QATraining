@@ -1,18 +1,56 @@
 html {
-  font-size: 14px;
+    font-size: 14px;
 }
 
 @media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
+    html {
+        font-size: 16px;
+    }
 }
 
 html {
-  position: relative;
-  min-height: 100%;
+    position: relative;
+    min-height: 100%;
 }
 
 body {
-  margin-bottom: 60px;
+    margin-bottom: 60px;
+}
+
+.main_app {
+    user-select: none;
+}
+
+.paging {
+    display: flex;
+    align-content: center;
+    margin-top: 30px;
+}
+
+.page-item {
+    border: solid 1px grey;
+    width: 32px;
+    height: 32px;
+    padding: 4px;
+    background: buttonface;
+    margin-right: 3px;
+    text-align: center;
+    cursor: pointer;
+    border-radius: 3px;
+    user-select: none;
+}
+
+.page-item:hover {
+    background-color: #d3cece;
+}
+
+.page-item a {
+    text-decoration: none;
+    font-size: 16px;
+    cursor: pointer;
+    color: buttontext;
+}
+
+.page-item-active a {
+    font-weight: bold;
 }

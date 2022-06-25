@@ -15,6 +15,7 @@ namespace StudentAppMvc.Models
         [DataType(DataType.Date)]
         public DateTime? DateOfBirth { get; set; }
 
+        [Display(Name = "Male")]
         public bool Gender { get; set; }
 
         [RegularExpression(@"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)", ErrorMessage = "Wrong email format")]
@@ -24,5 +25,8 @@ namespace StudentAppMvc.Models
         public string? Description { get; set; }
 
         public int? ClassId { get; set; }
+
+        [Display(Name = "Class")]
+        public string? ClassName { get; set; }
     }
 }

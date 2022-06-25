@@ -1,18 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using StudentAppMvc.Data;
 using StudentAppMvc.Models;
+using PagedList;
+using StudentAppMvc.Models.ViewModel;
 
 namespace StudentAppMvc.Controllers
 {
     public class TahhStudentsController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private const int PAGESIZE = 4;
 
         public TahhStudentsController(ApplicationDbContext context)
         {
@@ -20,11 +25,53 @@ namespace StudentAppMvc.Controllers
         }
 
         // GET: TahhStudents
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string sortOrder, string currentFilter, string searchString, int? page)
         {
-              return _context.Student != null ? 
-                          View(await _context.Student.ToListAsync()) :
-                          Problem("Entity set 'ApplicationDbContext.Student'  is null.");
+
+            sortOrder = String.IsNullOrEmpty(sortOrder) ? "name_desc" : sortOrder;
+
+            if (searchString != null)
+            {
+                page = 1;
+                searchString = convertToUnSign3(searchString);
+            }
+            else
+            {
+                searchString = currentFilter;
+            }
+
+            var students = _context.Student != null ? new List<Student>(await _context.Student.ToListAsync()) : null;
+            var classes = toDictionary(_context.Class != null ? new List<Class>(await _context.Class.ToListAsync()) : new List<Class>());
+            if (students != null)
+            {
+                students.ForEach(s => s.ClassName = s.ClassId != null ? classes[s.ClassId.ToString()] : "");
+
+                if (!String.IsNullOrEmpty(searchString))
+                {
+                    students = students.Where(s => convertToUnSign3(s.Name).Contains(searchString)).ToList();
+                }
+
+                switch (sortOrder)
+                {
+                    case "name_desc":
+                        students = students.OrderByDescending(s => s.Name).ToList();
+                        break;
+                    default:  // Name ascending 
+                        students = students.OrderBy(s => s.Name).ToList();
+                        break;
+                }
+
+                int pageNumber = (page ?? 1);
+                int totalPage = (int)Math.Ceiling((double)students.Count / (double)PAGESIZE);
+                int totalStudents = students.Count;
+                var pagedStudents = students.Take(new Range((pageNumber - 1) * PAGESIZE, Math.Min(totalStudents, pageNumber * PAGESIZE))).ToList();
+
+                return View(new TahhStudentViewModal(pagedStudents, totalPage, pageNumber, searchString, sortOrder));
+            }
+            else
+            {
+                return Problem("Entity set 'ApplicationDbContext.Student'  is null.");
+            }
         }
 
         // GET: TahhStudents/Details/5
@@ -158,6 +205,23 @@ namespace StudentAppMvc.Controllers
         private bool StudentExists(int id)
         {
           return (_context.Student?.Any(e => e.Id == id)).GetValueOrDefault();
+        }
+
+        public static string convertToUnSign3(string s)
+        {
+            Regex regex = new Regex("\\p{IsCombiningDiacriticalMarks}+");
+            string temp = s.Normalize(NormalizationForm.FormD);
+            return regex.Replace(temp, String.Empty).Replace('\u0111', 'd').Replace('\u0110', 'D').ToLower();
+        }
+
+        public Dictionary<string, string> toDictionary(List<Class> classes)
+        {
+            Dictionary<string, string> dictionary = new Dictionary<string, string>();
+            classes.ForEach(c =>
+            {
+                dictionary[c.Id.ToString()] = c.Name;
+            });
+            return dictionary;
         }
     }
 }
