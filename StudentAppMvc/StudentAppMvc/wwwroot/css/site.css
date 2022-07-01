@@ -1,3 +1,9 @@
+:root {
+    --white-color: #fff;
+    --label-form-width: 150px;
+    --input-form-width: 200px;
+}
+
 html {
     font-size: 14px;
 }
@@ -53,4 +59,26 @@ body {
 
 .page-item-active a {
     font-weight: bold;
+}
+
+.student-form .control-label {
+    margin-bottom: 5px;
+    display: inline-block;
+    width: var(--label-form-width);
+}
+
+.student-form-horizontal .form-control {
+    width: var(--input-form-width);
+    display: inline-block;
+    margin-bottom: 15px;
+}
+
+.student-form .form-group {
+    margin-bottom: 15px;
+}
+
+.rows-between {
+    display: flex;
+    justify-content: space-between;
+    align-items:center;
 }
