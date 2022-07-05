@@ -1,2 +1,4 @@
 ﻿StudentAppMvc/StudentAppMvc/obj
 StudentAppMvc/StudentAppMvc/bin
+*.vsidx
+StudentAppMvc/.vs/StudentAppMvc/FileContentIndex/read.lock
