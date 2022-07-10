@@ -82,3 +82,9 @@ body {
     justify-content: space-between;
     align-items:center;
 }
+
+.student-list .form-control {
+    width: var(--input-form-width);
+    display: inline-block;
+    margin-right: 10px;
+}

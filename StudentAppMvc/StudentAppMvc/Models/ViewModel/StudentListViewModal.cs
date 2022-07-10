@@ -8,7 +8,7 @@
             TotalPage = totalPage;
             CurrentPage = currentPage;
             SearchString = searchString;
-            NameSortParm = nameSortParm;
+            NameSortOrder = nameSortParm;
         }
 
         public List<Student> Students { get; set; }
@@ -19,6 +19,6 @@
 
         public string SearchString { get; set; }
 
-        public string NameSortParm { get; set; }
+        public string NameSortOrder { get; set; }
     }
 }

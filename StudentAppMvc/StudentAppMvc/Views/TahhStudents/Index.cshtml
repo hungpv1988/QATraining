@@ -11,87 +11,109 @@
     <a asp-action="Create">Create New</a>
 </p>
 
-@using (Html.BeginForm())
-{
-    <p>
-        Find by name: @Html.TextBox("SearchString")
-        <input type="submit" value="Search" />
-    </p>
-}
+<div class="student-list">
 
-<div class="tableWrap">
-    <table class="table">
-        <thead>
-            <tr>
-                <th>
-                    @*@Html.DisplayNameFor(model => model.Name)*@
-                    @Html.ActionLink("Name", "Index", new { sortOrder = ViewBag.NameSortParm })
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Students[0].DateOfBirth)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Students[0].Gender)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Students[0].Email)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Students[0].Description)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Students[0].ClassName)
-                </th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model.Students)
-            {
+    @using (Html.BeginForm())
+    {
+        <p>
+            Find by name: @Html.TextBox("SearchString",null, null, new {@class="form-control"})
+            <input type="submit" value="Search" class="btn btn-primary" />
+            @Html.ActionLink("Clear Search", "Index", new { sortOrder = @Model.NameSortOrder, page = @Model.CurrentPage }, new {@class= "btn btn-outline-primary"})
+        </p>
+    }
+
+    <div class="tableWrap">
+        <table class="table">
+            <thead>
                 <tr>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Name)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.DateOfBirth)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Gender)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Email)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Description)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.ClassName)
-                    </td>
-                    <td>
-                        <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                        <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                        <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-                    </td>
+                    <th>
+                        <a href="@Url.Action("Index", new { sortOrder = @Model.NameSortOrder == "name_desc" ? "name_asc" : "name_desc", page = @Model.CurrentPage, searchString = @Model.SearchString})" style="text-decoration: none">
+                            <i class="icon-pencil icon-white"></i>
+                            <span>
+                                <strong>Name</strong>
+                            </span> 
+                            @if (@Model.NameSortOrder == "name_desc")
+                            {
+                                <i class="fa-solid fa-arrow-down"></i>
+                            }
+                            else
+                            {
+                                <i class="fa-solid fa-arrow-up"></i>
+                            }
+
+                        </a>
+                        @*@Html.ActionLink("Name", "Index", new { sortOrder = @Model.NameSortOrder == "name_desc" ? "name_asc" : "name_desc", page = @Model.CurrentPage, searchString = @Model.SearchString})*@
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Students[0].DateOfBirth)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Students[0].Gender)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Students[0].Email)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Students[0].Description)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Students[0].ClassName)
+                    </th>
+                    <th></th>
                 </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.Students)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Name)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.DateOfBirth)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Gender)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Email)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Description)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.ClassName)
+                        </td>
+                        <td>
+                            @*<a asp-action="Edit" asp-route-id="@item.Id">Edit</a>*@
+                            @Html.ActionLink("Edit", "Edit", "TahhStudents", new {
+                        id= @item.Id , sortOrder = @Model.NameSortOrder, searchString = @Model.SearchString, page = @Model.CurrentPage
+                        })
+                            |
+                            <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                            <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+    </div>
+
+    @if (Model.TotalPage > 1)
+    {
+        <div class="paging">
+            @for (var i = 0; i < Model.TotalPage; i++)
+            {
+                var cls = @Model.CurrentPage == i + 1 ? "page-item-active" : "";
+
+                <div class="page-item @cls">
+                    @Html.ActionLink((i + 1).ToString(), "Index", new { sortOrder = @Model.NameSortOrder, searchString = Model.SearchString, page = i + 1 })
+                </div>
+
             }
-        </tbody>
-    </table>
+        </div>
+    }
 
 </div>
-
-@if (Model.TotalPage > 1)
-{
-    <div class="paging">
-        @for (var i = 0; i < Model.TotalPage; i++)
-        {
-            var cls = @Model.CurrentPage == i + 1 ? "page-item-active" : "";
-
-            <div class="page-item @cls">
-                @Html.ActionLink((i + 1).ToString(), "Index", new { sortOrder = @Model.NameSortParm, searchString = Model.SearchString, page = i + 1 })
-            </div>
-
-        }
-    </div>
-}
-
 

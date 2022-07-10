@@ -32,5 +32,11 @@ namespace StudentAppMvc.Models.ViewModel
                 return _classes;
             }
         }
+
+        public int? CurrentPage { get; set; }
+
+        public string? SearchString { get; set; }
+
+        public string? NameSortOrder { get; set; }
     }
 }

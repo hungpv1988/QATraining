@@ -28,7 +28,7 @@ namespace StudentAppMvc.Controllers
         public async Task<IActionResult> Index(string sortOrder, string currentFilter, string searchString, int? page)
         {
 
-            sortOrder = String.IsNullOrEmpty(sortOrder) ? "name_desc" : sortOrder;
+            sortOrder = String.IsNullOrEmpty(sortOrder) ? "name_asc" : sortOrder;
 
             if (searchString != null)
             {
@@ -117,7 +117,7 @@ namespace StudentAppMvc.Controllers
         }
 
         // GET: TahhStudents/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> Edit(int? id, string? sortOrder, string? searchString, int? page)
         {
             if (id == null || _context.Student == null)
             {
@@ -129,7 +129,13 @@ namespace StudentAppMvc.Controllers
             {
                 return NotFound();
             }
-            return View(new StudentViewModal(_context, student));
+
+            var studentViewModal = new StudentViewModal(_context, student);
+            studentViewModal.NameSortOrder = sortOrder;
+            studentViewModal.SearchString = searchString;
+            studentViewModal.CurrentPage = page;
+
+            return View(studentViewModal);
         }
 
         // POST: TahhStudents/Edit/5
@@ -137,7 +143,7 @@ namespace StudentAppMvc.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,DateOfBirth,Gender,Email,Description,ClassId")] Student student)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,DateOfBirth,Gender,Email,Description,ClassId")] Student student, String? CurrentPage, String? NameSortOrder, String? SearchString)
         {
             if (id != student.Id)
             {
@@ -162,7 +168,12 @@ namespace StudentAppMvc.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Index), new
+                {
+                    sortOrder = NameSortOrder,
+                    searchString = SearchString,
+                    page = CurrentPage
+                });
             }
 
             return View(new StudentViewModal(_context, student));

@@ -41,11 +41,17 @@
             </div>
             <div class="form-group">
                 <label asp-for="ClassName" class="control-label"></label>
-                <select asp-for="ClassId" class ="form-control" asp-items="@Model.Classes"></select> 
+                <select asp-for="ClassId" class="form-control" asp-items="@Model.Classes"></select>
             </div>
             <div class="form-group mt-4">
+                <input type="hidden" asp-for="NameSortOrder" />
+                <input type="hidden" asp-for="SearchString" />
+                <input type="hidden" asp-for="CurrentPage" />
                 <input type="submit" value="Update" class="btn btn-primary" />
-                <a asp-action="Index" class="btn btn-outline-primary">Back to List</a>
+                @*<a asp-action="Index" class="btn btn-outline-primary">Back to List</a>*@
+                @Html.ActionLink("Back to List", "Index", "TahhStudents", new {
+                    sortOrder = @Model.NameSortOrder, searchString = @Model.SearchString, page = @Model.CurrentPage
+                }, new { @class = "btn btn-outline-primary" }),
             </div>
         </form>
     </div>
