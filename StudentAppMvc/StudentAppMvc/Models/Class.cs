@@ -4,6 +4,18 @@ namespace StudentAppMvc.Models
 {
     public class Class
     {
+        public Class()
+        {
+        }
+
+        public Class(int id, string name, string departmentCode, Department? department)
+        {
+            Id = id;
+            Name = name;
+            DepartmentCode = departmentCode;
+            Department = department;
+        }
+
         [Key]
         public int Id { get; set; }
 

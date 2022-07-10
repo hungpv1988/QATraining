@@ -4,8 +4,35 @@ namespace StudentAppMvc.Models
 {
     public class Student
     {
+        public Student()
+        {
+        }
+
+        public Student(Student student)
+        {
+            Id = student.Id;
+            Name = student.Name;
+            DateOfBirth = student.DateOfBirth;
+            Gender = student.Gender;
+            Email = student.Email;
+            Description = student.Description;
+            ClassId = student.ClassId;
+            ClassName = student.ClassName;
+        }
+
+        public Student(int id, string name, DateTime? dateOfBirth, bool gender, string email, string? description, int? classId, string? className)
+        {
+            Id = id;
+            Name = name;
+            DateOfBirth = dateOfBirth;
+            Gender = gender;
+            Email = email;
+            Description = description;
+            ClassId = classId;
+            ClassName = className;
+        }
+
         [Key]     
-        
         public int Id { get; set; }
         [Required(ErrorMessage = "Name is required")]
         [StringLength(150, ErrorMessage = "Name's length should be under 50 ")]
@@ -28,5 +55,9 @@ namespace StudentAppMvc.Models
 
         [Display(Name = "Class")]
         public string? ClassName { get; set; }
+
+
+
+        
     }
 }

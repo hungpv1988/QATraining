@@ -1,8 +1,8 @@
 ﻿namespace StudentAppMvc.Models.ViewModel
 {
-    public class TahhStudentViewModal
+    public class StudentListViewModal
     {
-        public TahhStudentViewModal(List<Student> students, int totalPage, int currentPage, string searchString, string nameSortParm)
+        public StudentListViewModal(List<Student> students, int totalPage, int currentPage, string searchString, string nameSortParm)
         {
             Students = students;
             TotalPage = totalPage;

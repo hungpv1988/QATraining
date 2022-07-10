@@ -66,7 +66,7 @@ namespace StudentAppMvc.Controllers
                 int totalStudents = students.Count;
                 var pagedStudents = students.Take(new Range((pageNumber - 1) * PAGESIZE, Math.Min(totalStudents, pageNumber * PAGESIZE))).ToList();
 
-                return View(new TahhStudentViewModal(pagedStudents, totalPage, pageNumber, searchString, sortOrder));
+                return View(new StudentListViewModal(pagedStudents, totalPage, pageNumber, searchString, sortOrder));
             }
             else
             {
@@ -94,8 +94,10 @@ namespace StudentAppMvc.Controllers
 
         // GET: TahhStudents/Create
         public IActionResult Create()
-        {
-            return View();
+        { 
+            StudentViewModal studentViewModal = new StudentViewModal(_context);
+
+            return View(studentViewModal);
         }
 
         // POST: TahhStudents/Create
@@ -127,7 +129,7 @@ namespace StudentAppMvc.Controllers
             {
                 return NotFound();
             }
-            return View(student);
+            return View(new StudentViewModal(_context, student));
         }
 
         // POST: TahhStudents/Edit/5
@@ -162,7 +164,8 @@ namespace StudentAppMvc.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(student);
+
+            return View(new StudentViewModal(_context, student));
         }
 
         // GET: TahhStudents/Delete/5
