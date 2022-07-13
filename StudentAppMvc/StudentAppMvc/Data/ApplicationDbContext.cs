@@ -27,5 +27,6 @@ namespace StudentAppMvc.Data
         public DbSet<StudentAppMvc.Models.Department>? Department { get; set; }
 
         public DbSet<StudentAppMvc.Models.Class>? Class { get; set; }
+
     }
 }

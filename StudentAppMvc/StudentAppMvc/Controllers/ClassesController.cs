@@ -6,10 +6,12 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using StudentAppMvc.Data;
+using StudentAppMvc.Filter;
 using StudentAppMvc.Models;
 
 namespace StudentAppMvc.Controllers
 {
+    [AuthenticationFilterAttribute]
     public class ClassesController : Controller
     {
         private readonly ApplicationDbContext _context;

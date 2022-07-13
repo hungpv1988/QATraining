@@ -11,9 +11,11 @@ using StudentAppMvc.Data;
 using StudentAppMvc.Models;
 using PagedList;
 using StudentAppMvc.Models.ViewModel;
+using StudentAppMvc.Filter;
 
 namespace StudentAppMvc.Controllers
 {
+    [AuthenticationFilterAttribute]
     public class TahhStudentsController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -25,20 +27,20 @@ namespace StudentAppMvc.Controllers
         }
 
         // GET: TahhStudents
-        public async Task<IActionResult> Index(string sortOrder, string currentFilter, string searchString, int? page)
+        public async Task<IActionResult> Index(string sortOrder, string currentFilter, string searchString, int? page, int? classId)
         {
 
             sortOrder = String.IsNullOrEmpty(sortOrder) ? "name_asc" : sortOrder;
 
-            if (searchString != null)
-            {
-                page = 1;
-                searchString = convertToUnSign3(searchString);
-            }
-            else
-            {
-                searchString = currentFilter;
-            }
+            //if (searchString != null)
+            //{
+            //    page = 1;
+            //    searchString = convertToUnSign3(searchString);
+            //}
+            //else
+            //{
+            //    searchString = currentFilter;
+            //}
 
             var students = _context.Student != null ? new List<Student>(await _context.Student.ToListAsync()) : null;
             var classes = toDictionary(_context.Class != null ? new List<Class>(await _context.Class.ToListAsync()) : new List<Class>());
@@ -48,7 +50,17 @@ namespace StudentAppMvc.Controllers
 
                 if (!String.IsNullOrEmpty(searchString))
                 {
-                    students = students.Where(s => convertToUnSign3(s.Name).Contains(searchString)).ToList();
+                    students = students.Where(s => convertToUnSign3(s.Name).Contains(convertToUnSign3(searchString))).ToList();
+                }
+
+                if (classId >= 0)
+                {
+                    students = students.Where(s => s.ClassId == classId).ToList();
+                }
+
+                if (classId?.ToString() == StudentListViewModal.NO_CLASS_ID)
+                {
+                    students = students.Where(s => s.ClassId == null).ToList();
                 }
 
                 switch (sortOrder)
@@ -61,12 +73,13 @@ namespace StudentAppMvc.Controllers
                         break;
                 }
 
-                int pageNumber = (page ?? 1);
                 int totalPage = (int)Math.Ceiling((double)students.Count / (double)PAGESIZE);
                 int totalStudents = students.Count;
+                int pageNumber = (page ?? 1);
+                pageNumber = totalStudents <= (pageNumber - 1) * PAGESIZE ? 1 : pageNumber;
                 var pagedStudents = students.Take(new Range((pageNumber - 1) * PAGESIZE, Math.Min(totalStudents, pageNumber * PAGESIZE))).ToList();
 
-                return View(new StudentListViewModal(pagedStudents, totalPage, pageNumber, searchString, sortOrder));
+                return View(new StudentListViewModal(pagedStudents, totalPage, pageNumber, searchString, sortOrder, classId, _context));
             }
             else
             {

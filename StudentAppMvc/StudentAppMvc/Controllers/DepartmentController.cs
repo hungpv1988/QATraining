@@ -12,6 +12,7 @@ using StudentAppMvc.Models;
 namespace StudentAppMvc.Controllers
 {
     [LogFilterAttribute]
+    [AuthenticationFilterAttribute]
     public class DepartmentController : Controller
     {
         private readonly ApplicationDbContext _context;

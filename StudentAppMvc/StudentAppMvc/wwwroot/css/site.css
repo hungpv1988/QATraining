@@ -88,3 +88,11 @@ body {
     display: inline-block;
     margin-right: 10px;
 }
+
+.student-search-area {
+    padding: 10px 0px;
+    background-color: buttonface;
+    border: solid 1px gray;
+    border-radius: 5px;
+    margin-bottom: 25px;
+}

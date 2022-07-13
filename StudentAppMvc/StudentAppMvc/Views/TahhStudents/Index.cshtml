@@ -15,11 +15,18 @@
 
     @using (Html.BeginForm())
     {
-        <p>
-            Find by name: @Html.TextBox("SearchString",null, null, new {@class="form-control"})
-            <input type="submit" value="Search" class="btn btn-primary" />
-            @Html.ActionLink("Clear Search", "Index", new { sortOrder = @Model.NameSortOrder, page = @Model.CurrentPage }, new {@class= "btn btn-outline-primary"})
-        </p>
+        <div class="row student-search-area">
+            <div style="width: 50%">
+                Find by name: @Html.TextBox("SearchString",null, null, new {@class="form-control"})
+                <input id="btnSubmit" type="submit" value="Search" class="btn btn-primary" />
+                @Html.ActionLink("Clear Search", "Index", new { sortOrder = @Model.NameSortOrder, page = 1, classId = @Model.ClassId }, new {@class= "btn btn-outline-primary"})
+            </div>
+            <div style="text-align: right; width: 50%">
+                Filter by class:
+                <select asp-for="ClassId" id="classSelectId" class="form-control" asp-items="@Model.Classes" onchange="document.getElementById('btnSubmit').click()"></select>
+            </div>
+            
+        </div>
     }
 
     <div class="tableWrap">
@@ -108,7 +115,7 @@
                 var cls = @Model.CurrentPage == i + 1 ? "page-item-active" : "";
 
                 <div class="page-item @cls">
-                    @Html.ActionLink((i + 1).ToString(), "Index", new { sortOrder = @Model.NameSortOrder, searchString = Model.SearchString, page = i + 1 })
+                    @Html.ActionLink((i + 1).ToString(), "Index", new { sortOrder = @Model.NameSortOrder, searchString = @Model.SearchString, page = i + 1, classId = @Model.ClassId  })
                 </div>
 
             }
