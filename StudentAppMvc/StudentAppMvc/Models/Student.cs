@@ -19,12 +19,15 @@ namespace StudentAppMvc.Models
 
         public bool Gender { get; set; }
 
+        [DisplayFormat(DataFormatString = "MM/dd/yyyy hh:mm tt")]
+        [DataType(DataType.Date)]
+        public DateTime? DateOfBirth { get; set; }
+
         [RegularExpression(@"^([\w\.\-]+)@ptit.edu$", ErrorMessage = "Email should be @ptit.edu")]
         [Required]
         public string Email { get; set; }
 
         [StringLength(5)]
         public string? StudentAccount { get; set; }
-
     }
 }

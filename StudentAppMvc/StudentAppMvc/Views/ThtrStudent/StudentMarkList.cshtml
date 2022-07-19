@@ -1,0 +1,66 @@
+﻿@using StudentAppMvc.Models
+@model IEnumerable<StudentAppMvc.Models.MarkForStudent>
+@{
+    ViewData["Title"] = "View the mark table of students";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>The list of mark</h1>
+
+<hr />
+<div class="row">
+    <div class="col-md-4">
+       <table>
+    <thead>
+        <tr>
+            <th>
+                StudentId
+            </th>
+            <th>
+                Student Name
+            </th>
+            <th>
+                Subject Name
+            </th>
+            <th>
+                Mark
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (MarkForStudent item in Model)
+        {
+            <tr>
+                <td>
+                    @*@Html.DisplayFor(modelItem => item.Id)*@
+                    @item.StudentId
+                </td>
+                <td>
+                    @*@Html.DisplayFor(modelItem => item.Name)*@
+                    @item.StudentName
+                </td>
+                <td>
+                    @*@Html.DisplayFor(modelItem => item.Description)*@
+                    @item.SubjectName
+                </td>
+                <td>
+                    @item.Mark
+                </td>
+                <td>
+                    @*<a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |*@
+                    <a asp-action="DeleteMarkForStudent" asp-route-id="@item.Id" onclick="return confirm('Are you sure to delete this student?');">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+
+</table>
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{
+    await Html.RenderPartialAsync("_ValidationScriptsPartial");
+}
+}

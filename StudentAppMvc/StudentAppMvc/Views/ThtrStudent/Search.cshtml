@@ -1,11 +1,13 @@
 ﻿@*
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
-@{
+@*@{
     ViewBag.Title = "Student Search";
     List<Student> students = ViewBag.StudentList;
     string keyword = !String.IsNullOrEmpty(ViewBag.keyword) ? ViewBag.keyword.ToString() : "";
-}
+}*@
+@using StudentAppMvc.Models.ViewModels
+@model StudentListViewModel
 
 
 <h2>Search Page</h2>
@@ -14,8 +16,19 @@
     <div class="col-md-4">
         <form asp-action="Search">
             <div class="form-group">
-                <label for="keyword">Search</label>
-                <input type="text" id = "keyword" name = "keyword" class="form-control" value = @keyword />
+                <label for="control-label">Search for Name</label>
+                <input type="text" id = "searchName" name = "searchName" value = @Model.SearchName>
+                <label for="control-label">Search for Gender</label>
+                <select name="searchGender" class="form-control">
+                @{
+                    if (@Model.SearchGender == null)
+                    {
+                        <option value="" selected="selected">-</option>
+                        <option value="true">Male</option>
+                        <option value="false">Female</option>
+                    }
+                }
+                </select>
                
             </div>
             <div class="form-group">
@@ -25,7 +38,8 @@
     </div>
 </div>
 <br />
-@await Html.PartialAsync("_studentList", new {Students = students, keyword = keyword})
+@*@await Html.PartialAsync("_studentLst", new {Students = students, keyword = keyword})*@
+@await Html.PartialAsync("_studentLst", @Model)
 <br />
 <div>
     <a asp-action="Index">Back to management</a>

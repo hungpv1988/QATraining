@@ -1,0 +1,69 @@
+﻿@using StudentAppMvc.Models.ViewModels
+@model StudentListViewModel
+@*@{
+    //List<Student> students = ViewBag.StudentList;
+    //string keyword = ViewBag.Keyword;
+    ViewBag.Title = "Student List";
+}*@
+<h1>The list of students</h1>
+
+@*<p>
+    <a asp-action="Create">Create New</a>
+    </p>*@
+<table>
+    <thead>
+        <tr>
+            <th>
+                Id
+            </th>
+            <th>
+                Name
+            </th>
+            <th>
+                Email
+            </th>
+            <th>
+                Student Account
+            </th>
+            <th>Total</th>
+            <th>Average</th>
+        </tr>
+    </thead>
+    <tbody>
+        @{
+            <tr>@Model.SearchName</tr>
+            <tr>@Model.SearchGender</tr>
+        }
+        @foreach (StudentMarkViewModel item in Model.StudentMarksLst)
+        {
+            <tr>
+                <td>
+                    @*@Html.DisplayFor(modelItem => item.Id)*@
+                    @item.StudentId
+                </td>
+                <td>
+                    @*@Html.DisplayFor(modelItem => item.Name)*@
+                    @item.Name
+                </td>
+                <td>
+                    @*@Html.DisplayFor(modelItem => item.Description)*@
+                    @item.Email
+                </td>
+                <td>
+                    @item.StudentAccount
+                </td>
+                <td>
+                    @item.Total
+                </td>
+                <td><span style="background-color:@item.ColorMark">@item.Average</span>  </td>
+                <td>
+                    @*<a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |*@
+                    <a asp-action="Edit" asp-route-id="@item.StudentId">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.StudentId">Details</a> |
+                    <a asp-action="CreateMark" asp-route-id="@item.StudentId">Create mark</a> |
+                    <a asp-action="Delete" asp-route-id="@item.StudentId" onclick="return confirm('Are you sure to delete this student?');">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

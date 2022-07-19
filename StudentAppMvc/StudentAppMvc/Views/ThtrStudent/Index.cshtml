@@ -1,9 +1,10 @@
-﻿@*@model IEnumerable<StudentAppMvc.Models.ThtrStudent>*@
+﻿@using StudentAppMvc.Models.ViewModels
+@model StudentListViewModel
 
 @{
     //Layout = "~/Views/Shared/_Layout.cshtml";
     ViewBag.Title = "Student Management";
-    List<Student> students = ViewBag.StudentList;
+    //List<Student> students = ViewBag.StudentList;
     string keyword = !String.IsNullOrEmpty(ViewBag.Keyword) ? ViewBag.Keyword.ToString() : "";
 }
 
@@ -11,9 +12,21 @@
 <div class="row">
     <div class="col-md-4">
         <form asp-action="Search">
-            <div class="form-group">
-                <label for="keyword">Search</label>
-                <input type="text" id = "keyword" name = "keyword" class="form-control" />
+             <div class="form-group">
+                <label for="control-label">Search for Name</label>
+                <input type="text" id = "searchName" name = "searchName" value = "@Model.SearchName" />
+                <label for="control-label">Search for Gender</label>
+                <select name="searchGender" class="form-control">
+                @{
+                    if (@Model.SearchGender == null)
+                    {
+                        <option value="" selected="selected">-</option>
+                        <option value="true">Male</option>
+                        <option value="false">Female</option>
+                    }
+                }
+                </select>
+               
             </div>
             <br />
             <div class="form-group">
@@ -23,7 +36,8 @@
     </div>
 </div>
 <br />
-@await Html.PartialAsync("_studentList", new {Students = students, Keyword = keyword})
+@*@await Html.PartialAsync("_studentLst", new {StudentMarkLst = @Model, Keyword = keyword})*@
+@await Html.PartialAsync("_studentLst", @Model)
 <div>
     <a asp-action="Create">Create Student</a> | <a asp-action="Index" asp-route-lastestCount=5>Get last 5 students</a> | <a asp-action="Index">Get all students</a>
 </div>
