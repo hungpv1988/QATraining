@@ -1,4 +1,5 @@
-﻿using StudentAppMvc.Data;
+﻿using Microsoft.EntityFrameworkCore;
+using StudentAppMvc.Data;
 using StudentAppMvc.Models;
 using StudentAppMvc.Models.DTO;
 
@@ -37,7 +38,7 @@ namespace StudentAppMvc.Repository
             return givenClass;
         }
 
-        public Class Get(int id)
+        public Class GetClass(int id)
         {
             if (_context.Class == null || id <= 0) 
             {
@@ -65,6 +66,26 @@ namespace StudentAppMvc.Repository
             }
 
             return _context.Department.ToList();
+        }
+
+        public Class UpdateClass(Class givenClass)
+        {
+            if (_context.Class == null)
+            {
+                throw new ArgumentException();
+            }
+
+            try
+            {
+                _context.Class.Update(givenClass);
+                _context.SaveChanges();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                throw;
+            }
+
+            return givenClass;
         }
     }
 }

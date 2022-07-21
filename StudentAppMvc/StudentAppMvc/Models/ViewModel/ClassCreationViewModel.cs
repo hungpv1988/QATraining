@@ -5,6 +5,7 @@ namespace StudentAppMvc.Models.ViewModel
 {
     public class ClassCreationViewModel
     {
+        public int? Id { get; set; }
         public string? UpcomingPeriod{ get; set; }
 
         public List<DepartmentDto>? Departments { get; set; }

@@ -1,6 +1,7 @@
 ﻿using StudentAppMvc.ExtensionMethods;
 using StudentAppMvc.Models;
 using StudentAppMvc.Models.DTO;
+using StudentAppMvc.Models.ViewModel;
 using StudentAppMvc.Repository;
 
 namespace StudentAppMvc.Services
@@ -20,7 +21,7 @@ namespace StudentAppMvc.Services
             _cache = new Dictionary<string, object>();
         }
 
-        public ClassDto Get(int id)
+        public ClassDto GetClass(int id)
         {
             var key = string.Format(_cacheKeyClassId, id);
             if (_cache.ContainsKey(key)) 
@@ -28,7 +29,7 @@ namespace StudentAppMvc.Services
                 return _cache[key] as ClassDto;
             }
 
-            var givenClass = _schoolRepository.Get(id);
+            var givenClass = _schoolRepository.GetClass(id);
 
             if (givenClass == null) 
             {
@@ -85,6 +86,19 @@ namespace StudentAppMvc.Services
             givenClass =  _schoolRepository.CreateClass(givenClass);
             var key = string.Format(_cacheKeyClassId, givenClass.Id);
             _cache[key] = givenClass.ToClassDto();
+
+            return _cache[key] as ClassDto;
+        }
+
+        public ClassDto UpdateClass(ClassDto classDto)
+        {
+            var updatedClass = _schoolRepository.UpdateClass(new Class() { 
+                Id = classDto.Id,
+                Name = classDto.Name,
+                DepartmentCode= classDto.DepartmentCode
+            });
+            var key = string.Format(_cacheKeyClassId, updatedClass.Id);
+            _cache[key] = updatedClass.ToClassDto();
 
             return _cache[key] as ClassDto;
         }
