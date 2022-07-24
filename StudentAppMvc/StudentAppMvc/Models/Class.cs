@@ -8,12 +8,11 @@ namespace StudentAppMvc.Models
         {
         }
 
-        public Class(int id, string name, string departmentCode, Department? department)
+        public Class(int id, string name, string departmentCode)
         {
             Id = id;
             Name = name;
             DepartmentCode = departmentCode;
-            Department = department;
         }
 
         [Key]

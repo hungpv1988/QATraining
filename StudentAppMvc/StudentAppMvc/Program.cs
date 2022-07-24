@@ -25,7 +25,8 @@ builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
     .AddEntityFrameworkStores<ApplicationDbContext>();
 builder.Services.AddControllersWithViews();
-builder.Services.AddScoped<ISchoolRepository, DefaultSchoolRepository>();
+//builder.Services.AddScoped<ISchoolRepository, DefaultSchoolRepository>();
+builder.Services.AddSingleton<ISchoolRepository, FakeSchoolRepository>();
 builder.Services.AddScoped<ISchoolService, DefaultSchoolService>();
 
 var app = builder.Build();

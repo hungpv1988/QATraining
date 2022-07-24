@@ -4,6 +4,17 @@ namespace StudentAppMvc.Models
 {
     public class Department
     {
+        public Department()
+        {
+
+        }
+        public Department(string code, string name, string description)
+        {
+            Code = code;
+            Name = name;
+            Description = description;
+        }
+
         [Key]
         [Display(Name = "Code")]
         [StringLength(50, MinimumLength = 1, ErrorMessage = "Department code's length should be from 1 to 50")]
