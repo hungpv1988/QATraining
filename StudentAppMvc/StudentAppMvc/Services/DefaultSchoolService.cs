@@ -39,40 +39,6 @@ namespace StudentAppMvc.Services
             return _cache[key] as ClassDto;
         }
 
-        public List<DepartmentDto> ListDepartments()
-        {
-            if (_cache.ContainsKey(_cacheKeyClassList))
-            {
-                return _cache[_cacheKeyDepartmentList] as List<DepartmentDto>;
-            }
-
-            var departmentList = _schoolRepository.ListDepartments();
-            if (departmentList == null || departmentList.Count == 0) 
-            {
-                return null;
-            }
-
-            _cache[_cacheKeyDepartmentList] = departmentList.Select(d => d.ToDepartmentDto()).ToList();
-            return _cache[_cacheKeyDepartmentList] as List<DepartmentDto>;
-        }
-
-        public List<ClassDto> ListClasses()
-        {
-            if (_cache.ContainsKey(_cacheKeyClassList)) 
-            {
-                return _cache[_cacheKeyClassList] as List<ClassDto>;
-            }
-
-            var classList = _schoolRepository.ListClasses();
-            if (classList == null || classList.Count == 0) 
-            {
-                return null;
-            }
-
-            _cache[_cacheKeyClassList] = classList.Select(c => ConvertClassToClassDto(c)).ToList();
-            return _cache[_cacheKeyClassList] as List<ClassDto>;
-        }
-
         public ClassDto AddClass(ClassDto classDto)
         {
             // do validation here, add more for open for exten and close for modification
@@ -103,6 +69,33 @@ namespace StudentAppMvc.Services
             return _cache[key] as ClassDto;
         }
 
+        public List<ClassDto> ListClasses()
+        {
+            if (_cache.ContainsKey(_cacheKeyClassList))
+            {
+                return _cache[_cacheKeyClassList] as List<ClassDto>;
+            }
+
+            var classList = _schoolRepository.ListClasses();
+            if (classList == null || classList.Count == 0)
+            {
+                return null;
+            }
+
+            _cache[_cacheKeyClassList] = classList.Select(c => ConvertClassToClassDto(c)).ToList();
+            return _cache[_cacheKeyClassList] as List<ClassDto>;
+        }
+
+        public ClassDto DeleteClass(int id)
+        {
+            ClassDto deletedClass =  _schoolRepository.DeleteClass(id).ToClassDto();
+            
+            var key = string.Format(_cacheKeyClassId, id);
+            _cache.Remove(key);
+
+            return deletedClass;
+        }
+
         private ClassDto ConvertClassToClassDto(Class givenClass) 
         {
             var classDto = givenClass.ToClassDto();
@@ -115,5 +108,60 @@ namespace StudentAppMvc.Services
 
             return classDto;
         }
+
+        public DepartmentDto GetDepartment(string code)
+        {
+            var foundDepartment = _schoolRepository.GetDepartment(code);
+
+            if (foundDepartment == null)
+            {
+                return null;
+            }
+            
+            return foundDepartment.ToDepartmentDto();
+        }
+
+        public DepartmentDto AddDepartment(DepartmentDto departmentDto)
+        {
+            var _department = new Department()
+            {
+                Code = departmentDto.Code,
+                Name = departmentDto.Name,
+                Description = departmentDto.Description
+            };
+
+            _department = _schoolRepository.CreateDepartment(_department);
+
+            return _department.ToDepartmentDto();
+        }
+
+        public DepartmentDto UpdateDepartment(DepartmentDto departmentDto)
+        {
+            var updatedDepartment = _schoolRepository.UpdateDepartment(new Department()
+            {
+                Code = departmentDto.Code,
+                Name = departmentDto.Name,
+                Description = departmentDto.Description
+            });
+
+            return updatedDepartment.ToDepartmentDto();
+        }
+
+        public List<DepartmentDto> ListDepartments()
+        { 
+            var departmentList = _schoolRepository.ListDepartments();
+            if (departmentList == null || departmentList.Count == 0)
+            {
+                return null;
+            }
+
+            return departmentList.Select(d => d.ToDepartmentDto()).ToList();
+        }
+
+        public DepartmentDto DeleteDepartment(string code)
+        {
+            return _schoolRepository.DeleteDepartment(code).ToDepartmentDto();
+        }
+
     }
 }

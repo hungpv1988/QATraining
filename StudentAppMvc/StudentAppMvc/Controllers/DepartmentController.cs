@@ -8,6 +8,9 @@ using Microsoft.EntityFrameworkCore;
 using StudentAppMvc.Data;
 using StudentAppMvc.Filter;
 using StudentAppMvc.Models;
+using StudentAppMvc.Models.DTO;
+using StudentAppMvc.Models.ViewModel;
+using StudentAppMvc.Services;
 
 namespace StudentAppMvc.Controllers
 {
@@ -15,37 +18,35 @@ namespace StudentAppMvc.Controllers
     [AuthenticationFilterAttribute]
     public class DepartmentController : Controller
     {
-        private readonly ApplicationDbContext _context;
+        private ISchoolService _schoolService;
 
-        public DepartmentController(ApplicationDbContext context)
+        public DepartmentController(ISchoolService schoolService)
         {
-            _context = context;
+            _schoolService = schoolService;
         }
 
         // GET: Departments
         public async Task<IActionResult> Index()
         {
-              return _context.Department != null ? 
-                          View(await _context.Department.ToListAsync()) :
-                          Problem("Entity set 'ApplicationDbContext.Department'  is null.");
+            var departmentList = _schoolService.ListDepartments();
+            var indexViewModel = new DepartmentListViewModel()
+            {
+                DepartmentList = departmentList
+            };
+
+            return View(indexViewModel);
         }
 
         // GET: Departments/Details/5
         public async Task<IActionResult> Details(string id)
         {
-            if (id == null || _context.Department == null)
+            if (id == null)
             {
                 return NotFound();
             }
 
-            var department = await _context.Department
-                .FirstOrDefaultAsync(m => m.Code == id);
-            if (department == null)
-            {
-                return NotFound();
-            }
-
-            return View(department);
+            var viewModel = _schoolService.GetDepartment(id);
+            return View(viewModel);
         }
 
         // GET: Departments/Create
@@ -59,31 +60,31 @@ namespace StudentAppMvc.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Code,Name,Description")] Department department)
+        public async Task<IActionResult> Create([Bind("Code,Name,Description")] DepartmentDto departmentDto)
         {
             if (ModelState.IsValid)
-            {
-                _context.Add(department);
-                await _context.SaveChangesAsync();
+            { 
+                var createdDepartment = _schoolService.AddDepartment(departmentDto);
                 return RedirectToAction(nameof(Index));
             }
-            return View(department);
+            return View(departmentDto);
         }
 
         // GET: Departments/Edit/5
-        public async Task<IActionResult> Edit(string id)
+        public async Task<IActionResult> Edit(string? id)
         {
-            if (id == null || _context.Department == null)
+            if (String.IsNullOrEmpty(id))
             {
                 return NotFound();
             }
 
-            var department = await _context.Department.FindAsync(id);
-            if (department == null)
+            var departmentDto = _schoolService.GetDepartment(id);
+            if (departmentDto == null)
             {
                 return NotFound();
             }
-            return View(department);
+
+            return View(departmentDto);
         }
 
         // POST: Departments/Edit/5
@@ -91,46 +92,30 @@ namespace StudentAppMvc.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("Code,Name,Description")] Department department)
+        public async Task<IActionResult> Edit(string code, [Bind("Code,Name,Description")] DepartmentDto departmentDto)
         {
-            if (id != department.Code)
+            if (code != departmentDto.Code)
             {
                 return NotFound();
             }
 
             if (ModelState.IsValid)
             {
-                try
-                {
-                    _context.Update(department);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!DepartmentExists(department.Code))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
+                _schoolService.UpdateDepartment(departmentDto);
                 return RedirectToAction(nameof(Index));
             }
-            return View(department);
+            return View(departmentDto);
         }
 
         // GET: Departments/Delete/5
         public async Task<IActionResult> Delete(string id)
         {
-            if (id == null || _context.Department == null)
+            if (String.IsNullOrEmpty(id))
             {
                 return NotFound();
             }
 
-            var department = await _context.Department
-                .FirstOrDefaultAsync(m => m.Code == id);
+            var department = _schoolService.GetDepartment(id);
             if (department == null)
             {
                 return NotFound();
@@ -144,23 +129,23 @@ namespace StudentAppMvc.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(string id)
         {
-            if (_context.Department == null)
+            if (String.IsNullOrEmpty(id))
             {
-                return Problem("Entity set 'ApplicationDbContext.Department'  is null.");
+                return NotFound();
             }
-            var department = await _context.Department.FindAsync(id);
-            if (department != null)
+
+            var department = _schoolService.DeleteDepartment(id);
+            if (department == null)
             {
-                _context.Department.Remove(department);
+                return NotFound();
             }
-            
-            await _context.SaveChangesAsync();
+
             return RedirectToAction(nameof(Index));
         }
 
-        private bool DepartmentExists(string id)
+        private bool DepartmentExists(string code)
         {
-          return (_context.Department?.Any(e => e.Code == id)).GetValueOrDefault();
+          return _schoolService.GetDepartment(code) != null;
         }
     }
 }

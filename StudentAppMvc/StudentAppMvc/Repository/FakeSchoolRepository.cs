@@ -31,6 +31,16 @@ namespace StudentAppMvc.Repository
 
         }
 
+        public Class GetClass(int id)
+        {
+            if (id <= 0)
+            {
+                throw new ArgumentException();
+            }
+
+            return _classes.FirstOrDefault(x => x.Id == id);
+        }
+
         public Class CreateClass(Class givenClass)
         {
             var isClassExistedBefore = _classes.Any(x => x.Name == givenClass.Name);
@@ -47,26 +57,6 @@ namespace StudentAppMvc.Repository
             return givenClass;
         }
 
-        public Class GetClass(int id)
-        {
-            if (id <= 0) 
-            {
-                throw new ArgumentException();
-            }
-
-            return _classes.FirstOrDefault(x => x.Id == id);
-        }
-
-        public List<Class> ListClasses()
-        {
-            return _classes.ToList();
-        }
-
-        public List<Department> ListDepartments()
-        {
-            return _departments.ToList();
-        }
-
         public Class UpdateClass(Class givenClass)
         {
             var index = _classes.FindIndex(c => c.Id == givenClass.Id);
@@ -77,6 +67,89 @@ namespace StudentAppMvc.Repository
             }
 
             return givenClass;
+        }
+
+        public List<Class> ListClasses()
+        {
+            return _classes.ToList();
+        }
+
+        public Department GetDepartment(string code)
+        {
+            if (String.IsNullOrEmpty(code))
+            {
+                throw new ArgumentException();
+            }
+
+            return _departments.FirstOrDefault(x => x.Code == code);
+        }
+
+        public Department CreateDepartment(Department givenDepartment)
+        {
+            var isExist = _departments.Any(x => x.Code == givenDepartment.Code);
+
+
+            if (isExist)
+            {
+                throw new Exception();
+            }
+
+            _departments.Add(givenDepartment);
+
+            return givenDepartment;
+        }
+
+        public Department UpdateDepartment(Department givenDepartment)
+        {
+            var index = _departments.FindIndex(c => c.Code == givenDepartment.Code);
+
+            if (index >= 0)
+            {
+                _departments[index] = givenDepartment;
+            }
+
+            return givenDepartment;
+        }
+
+        public List<Department> ListDepartments()
+        {
+            return _departments.ToList();
+        }
+
+        public Class DeleteClass(int id)
+        {
+            var index = _classes.FindIndex(c => c.Id == id);
+            Class deletedClass;
+
+            if (index >= 0)
+            {
+                deletedClass = _classes[index];
+                _classes.RemoveAt(index);
+            }
+            else
+            {
+                throw new Exception();
+            }
+
+            return deletedClass;
+        }
+
+        public Department DeleteDepartment(string code)
+        {
+            var index = _departments.FindIndex(c => c.Code == code);
+            Department deletedDepartment;
+
+            if (index >= 0)
+            {
+                deletedDepartment = _departments[index];
+                _departments.RemoveAt(index);
+            }
+            else
+            {
+                throw new Exception();
+            }
+
+            return deletedDepartment;
         }
     }
 }

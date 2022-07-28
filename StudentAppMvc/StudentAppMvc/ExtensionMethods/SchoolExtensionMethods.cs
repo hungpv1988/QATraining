@@ -21,7 +21,8 @@ namespace StudentAppMvc.ExtensionMethods
             return new DepartmentDto()
             {
                 Code = department.Code,
-                Name = department.Name
+                Name = department.Name,
+                Description = department.Description,
             };
         }
     }

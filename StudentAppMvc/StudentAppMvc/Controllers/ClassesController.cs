@@ -20,7 +20,7 @@ namespace StudentAppMvc.Controllers
         public async Task<IActionResult> Index()
         {
             var classList = _schoolService.ListClasses();
-            var indexViewModel = new IndexViewModel()
+            var indexViewModel = new ClassListViewModel()
             {
                 ClassList = classList,
                 WelcomeMsg = "Welcome to all classes in the year of 2022"
@@ -44,7 +44,7 @@ namespace StudentAppMvc.Controllers
         // GET: Classes/Create
         public IActionResult Create()
         {
-            ClassCreationViewModel viewModel = new ClassCreationViewModel()
+            ClassItemViewModel viewModel = new ClassItemViewModel()
             {
                 Departments = _schoolService.ListDepartments() ?? new List<DepartmentDto>(),
                 UpcomingPeriod = "The next period is from Step 2022 to 15th Oct 2022"
@@ -59,7 +59,7 @@ namespace StudentAppMvc.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Name,DepartmentCode")] ClassCreationViewModel @classViewModel)
+        public async Task<IActionResult> Create([Bind("Name,DepartmentCode")] ClassItemViewModel @classViewModel)
         {
             if (ModelState.IsValid)
             {
@@ -73,7 +73,7 @@ namespace StudentAppMvc.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            ClassCreationViewModel viewModel = new ClassCreationViewModel()
+            ClassItemViewModel viewModel = new ClassItemViewModel()
             {
                 Departments = _schoolService.ListDepartments(),
                 UpcomingPeriod = "The next period is from Step 2022 to 15th Oct 2022"
@@ -97,7 +97,7 @@ namespace StudentAppMvc.Controllers
                 return NotFound();
             }
 
-            ClassCreationViewModel viewModel = new ClassCreationViewModel()
+            ClassItemViewModel viewModel = new ClassItemViewModel()
             {
                 Departments = _schoolService.ListDepartments(),
                 UpcomingPeriod = "The next period is from Step 2022 to 15th Oct 2022",
@@ -114,7 +114,7 @@ namespace StudentAppMvc.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,DepartmentCode")] ClassCreationViewModel @class)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,DepartmentCode")] ClassItemViewModel @class)
         {
             if (id != @class.Id)
             {
@@ -148,7 +148,7 @@ namespace StudentAppMvc.Controllers
 
             }
 
-            ClassCreationViewModel viewModel = new ClassCreationViewModel()
+            ClassItemViewModel viewModel = new ClassItemViewModel()
             {
                 Departments = _schoolService.ListDepartments(),
                 UpcomingPeriod = "The next period is from Step 2022 to 15th Oct 2022",
@@ -160,6 +160,41 @@ namespace StudentAppMvc.Controllers
             return View(viewModel);
         }
 
+        // GET: Departments/Delete/5
+        public async Task<IActionResult> Delete(int id)
+        {
+            if (id == null || id < 0)
+            {
+                return NotFound();
+            }
+
+            var deletedClass = _schoolService.GetClass(id);
+            if (deletedClass == null)
+            {
+                return NotFound();
+            }
+
+            return View(deletedClass);
+        }
+
+        // POST: Departments/Delete/5
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(int id)
+        {
+            if (id == null || id < 0)
+            {
+                return NotFound();
+            }
+
+            var deletedClass = _schoolService.DeleteClass(id);
+            if (deletedClass == null)
+            {
+                return NotFound();
+            }
+
+            return RedirectToAction(nameof(Index));
+        }
 
     }
 }

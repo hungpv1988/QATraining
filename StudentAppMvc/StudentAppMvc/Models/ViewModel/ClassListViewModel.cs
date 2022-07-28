@@ -2,7 +2,7 @@
 
 namespace StudentAppMvc.Models.ViewModel
 {
-    public class IndexViewModel
+    public class ClassListViewModel
     {
         public List<ClassDto> ClassList { get; set; }
 

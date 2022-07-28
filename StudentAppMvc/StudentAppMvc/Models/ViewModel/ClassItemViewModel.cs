@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace StudentAppMvc.Models.ViewModel
 {
-    public class ClassCreationViewModel
+    public class ClassItemViewModel
     {
         public int? Id { get; set; }
         public string? UpcomingPeriod{ get; set; }
