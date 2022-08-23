@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using StudentAppMvc.Filter;
 using StudentAppMvc.Models;
+using StudentAppMvc.Services;
 
 namespace StudentAppMvc.Controllers
 {
@@ -9,9 +10,11 @@ namespace StudentAppMvc.Controllers
     public class StudentController : Controller
     {
         private static List<Student> _studentList;
-        public StudentController()
-        {
+        private ValidationService _validationService;
 
+        public StudentController(ValidationService validationService)
+        {
+            _validationService = validationService;
         }
 
         // GET: StudentController
@@ -52,6 +55,11 @@ namespace StudentAppMvc.Controllers
                 if (_studentList == null) 
                 {
                     _studentList = new List<Student>();
+                }
+                var result = _validationService.Validate(student);
+                if (result.Any()) 
+                {
+                    throw new Exception("error");
                 }
 
                 _studentList.Add(student);

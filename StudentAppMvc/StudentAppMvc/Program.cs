@@ -1,6 +1,9 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using StudentAppMvc.Data;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using StudentAppMvc.Services.ValidationRule;
+using StudentAppMvc.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 //var connectionString = builder.Configuration.GetConnectionString("ApplicationDbContextConnection");;
@@ -21,8 +24,11 @@ builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.Requ
     .AddEntityFrameworkStores<ApplicationDbContext>();
 builder.Services.AddControllersWithViews();
 
-var app = builder.Build();
+builder.Services.TryAddEnumerable(ServiceDescriptor.Singleton<IValidationRule, NameValidationRule>());
+builder.Services.TryAddEnumerable(ServiceDescriptor.Singleton<IValidationRule, DescriptionValidationRule>());
+builder.Services.AddSingleton<ValidationService, ValidationService>();
 
+var app = builder.Build();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
