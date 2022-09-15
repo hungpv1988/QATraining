@@ -1,4 +1,5 @@
 ﻿@*@model StudentAppMvc.Models.Student*@
+@model StudentAppMvc.Models.Student
 @{
     ViewData["Title"] = "Details";
     Student student = ViewBag.Student;
@@ -9,7 +10,7 @@
 
 <h1>Details</h1>
 <div>
-    <h3>Student @student.Name</h3>
+    <h3>Student @Model.Name</h3>
     <table class="table">
         <thead>
             <tr>

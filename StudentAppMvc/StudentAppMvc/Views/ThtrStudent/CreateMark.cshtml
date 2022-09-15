@@ -28,7 +28,7 @@
                 <select asp-for="SubjectList" class="form-control">
                     @foreach (Subject item in Model.SubjectList)
                     {
-                        <option value="@item.Name">@item.Name</option>
+                        <option value="@item.Id">@item.Name</option>
                     }
                 </select>
                 <span asp-validation-for="SubjectList" class="text-danger"></span>

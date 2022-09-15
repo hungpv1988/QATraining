@@ -1,14 +1,17 @@
 ﻿@using StudentAppMvc.Models.ViewModels
-@model IEnumerable<StudentAppMvc.Models.Subject>
+@model SubjectViewModel
 
 <br />
 <table>
+    @{
+    <tr>@Model.myMessage</tr>
+    }
     <tr>
         <th>Name</th>
         <th></th>
     </tr>
     @{
-        foreach (Subject subject in Model)
+        foreach (Subject subject in @Model.SubjectList)
         {
             <tr>
                 <td>@subject.Name</td>

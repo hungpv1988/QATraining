@@ -16,3 +16,16 @@ html {
 body {
   margin-bottom: 60px;
 }
+
+table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+tr {
+    border-bottom: 1px solid #ddd;
+}
+
+.found {
+    background-color: #fefbd8;
+}

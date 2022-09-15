@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using StudentAppMvc.Exceptions;
 using StudentAppMvc.Filter;
 using StudentAppMvc.Models;
 using StudentAppMvc.Models.ViewModels;
+using StudentAppMvc.Services;
 
 namespace StudentAppMvc.Controllers
 {
@@ -10,46 +12,19 @@ namespace StudentAppMvc.Controllers
     public class SubjectController : Controller
     {
         public static List<Subject> _subjectList;
-        private static int count = 1;
-        public SubjectController()
+        private ISubjectService _subjectService;
+
+        
+        public SubjectController(ISubjectService subjectService)
         {
-            if (_subjectList == null)
-            {
-                CreateSubjectList();
-            }
-                
+            _subjectService = subjectService;
         }
 
-        public static void CreateSubjectList()
-        {
-                _subjectList = new List<Subject>();
-                Subject subject1 = new Subject()
-                {
-                    Id = count++,
-                    Name = "Literature"
-
-                };
-                Subject subject2 = new Subject()
-                {
-                    Id = count++,
-                    Name = "English"
-
-                };
-                Subject subject3 = new Subject()
-                {
-                    Id = count++,
-                    Name = "Math"
-
-                };
-
-                _subjectList.Add(subject1);
-                _subjectList.Add(subject2);
-                _subjectList.Add(subject3);
-        }
         // GET: StudentController
-        public ActionResult Index(int lastestCount = 0)
+        public ActionResult Index()
         {
-            return View(_subjectList);
+            SubjectViewModel subjectViewModel = new SubjectViewModel(_subjectService.ListSubject(), "my testin");
+            return View(subjectViewModel);
         }
 
 
@@ -59,7 +34,6 @@ namespace StudentAppMvc.Controllers
             return View();
         }
 
-
         // POST: StudentController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -67,18 +41,15 @@ namespace StudentAppMvc.Controllers
         {
             try
             {
-                subject.Id = count++;
-                if (checkDuplicatSubject(subject.Name))
-                {
-                    ModelState.AddModelError("Name", "Subject is existent!");
-                    return View(subject);
-                }
-
-                _subjectList.Add(subject);
-
+                _subjectService.Create(subject);
                 return RedirectToAction(nameof(Index));
             }
-            catch (Exception)
+            catch (DuplicateObjectException doe)
+            {
+                ModelState.AddModelError("Name", doe.Message);
+                return View(subject);
+            }
+            catch (Exception ex)
             {
                 return View();
             }
@@ -86,41 +57,24 @@ namespace StudentAppMvc.Controllers
 
         public ActionResult Delete(int id)
         {
-            if (!ThtrStudentController._markForStudentList.Any(st => st.StudentId == id))
+            try
             {
-                //alert the message...
+                _subjectService.Delete(id);
             }
-            else
+            catch (ObjectExistInDTOException oe)
             {
-                Subject subject = GetSubjectById(id);
-                _subjectList.Remove(subject);
+                //alert on UI
+                Console.WriteLine(oe.Message);
             }
-            //_studentLst.RemoveAll(st => st.Id == id);
-            return RedirectToAction(nameof(Index));
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+  
+             return RedirectToAction(nameof(Index));
         }
+
+        
        
-        public static Subject GetSubjectById(int id)
-        {
-            return _subjectList.FirstOrDefault(st => st.Id == id);
-        }
-
-        private bool checkDuplicatSubject(string subjectName, Subject? subject = null)
-        {
-            Subject getSubject = _subjectList.FirstOrDefault(st => st.Name.Equals(subjectName));
-
-            if (getSubject == null || (subject != null && getSubject.Id.Equals(subject.Id)))
-            {
-                return false;
-            }
-
-            return true;
-
-        }
-
-        public bool CheckSubjectExist(int subjectId)
-        {
-            bool isExist = (ThtrStudentController._markForStudentList.FirstOrDefault(st => st.StudentId == subjectId) == null) ? false : true;
-            return isExist;
-        }
     }
 }

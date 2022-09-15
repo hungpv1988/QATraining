@@ -1,6 +1,6 @@
 ﻿namespace StudentAppMvc.Models.ViewModels
 {
-    public class StudentMarkViewModel
+    public class StudentMarkDTO
     {
         public int StudentId { get; set; }
         public string Name { get; set;}
