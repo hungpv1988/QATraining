@@ -41,6 +41,12 @@ namespace StudentAppMvc.Controllers
         {
             try
             {
+                if (!ModelState.IsValid)
+                {
+                    ModelState.AddModelError("Name", "Please input name of subject");
+                    return View();
+                }
+
                 _subjectService.Create(subject);
                 return RedirectToAction(nameof(Index));
             }

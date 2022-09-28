@@ -87,17 +87,17 @@ namespace StudentAppMvc.Services
             UpdateTotalMarkNStudentMark(studentId);
         }
 
-        public List<StudentMarkDTO> Search(string searchName = "", string searchGender = "")
+        public List<StudentMarkDTO> Search(SearchingCriteria searchCriteria)
         {
             List<StudentMarkDTO> studentMarksList = _studentMarksList;
-            if (!String.IsNullOrEmpty(searchName))
+            if (!String.IsNullOrEmpty(searchCriteria.SearchName))
             {
-                studentMarksList = _studentMarksList.Where(st => st.Name.Contains(searchName, StringComparison.OrdinalIgnoreCase)).ToList();
+                studentMarksList = _studentMarksList.Where(st => st.Name.Contains(searchCriteria.SearchName, StringComparison.OrdinalIgnoreCase)).ToList();
             }
 
-            if (!String.IsNullOrEmpty(searchGender))
+            if (!String.IsNullOrEmpty(searchCriteria.SearchGender))
             {
-                bool gender = bool.Parse(searchGender);
+                bool gender = bool.Parse(searchCriteria.SearchGender);
                 studentMarksList = _studentMarksList.Where(st => st.Gender == gender).ToList();
             }
 

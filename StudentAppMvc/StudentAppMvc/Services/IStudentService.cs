@@ -7,7 +7,7 @@ namespace StudentAppMvc.Services
     {
         List<StudentMarkDTO> GetStudentMarkList();
         List<MarkForStudent> GetMarkForStudentList();
-        List<StudentMarkDTO> Search(string searchName = "", string searchGender = "");
+        List<StudentMarkDTO> Search(SearchingCriteria searchingCriteria);
 
         Student GetById(int id);
         void Delete(int id);

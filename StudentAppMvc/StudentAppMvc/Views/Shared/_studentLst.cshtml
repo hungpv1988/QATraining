@@ -1,10 +1,28 @@
 ﻿@using StudentAppMvc.Models.ViewModels
 @model StudentListViewModel
-@*@{
+@{
     //List<Student> students = ViewBag.StudentList;
+
     //string keyword = ViewBag.Keyword;
-    ViewBag.Title = "Student List";
-}*@
+    //ViewBag.Title = "Student List";
+    //SearchingCriteria searchingCriteria = ViewBag.SearchingCriteria;
+    //string SearchName = "", SearchGender = "";
+    //if (searchingCriteria != null)
+    //{
+    //    SearchName = !String.IsNullOrEmpty(searchingCriteria.SearchName) ? searchingCriteria.SearchName : "";
+    //    SearchGender = !String.IsNullOrEmpty(searchingCriteria.SearchGender) ? searchingCriteria.SearchGender : "";
+
+    //}
+    //StudentListViewModel studentList = studentList;
+    SearchingCriteria searchingCriteria = ViewBag.SearchingCriteria;
+    string SearchName = "", SearchGender = "";
+    if (searchingCriteria != null)
+    {
+        SearchName = !String.IsNullOrEmpty(searchingCriteria.SearchName) ? searchingCriteria.SearchName : "";
+        SearchGender = !String.IsNullOrEmpty(searchingCriteria.SearchGender) ? searchingCriteria.SearchGender : "";
+
+    }
+}
 <h1>The list of students</h1>
 
 @*<p>
@@ -31,8 +49,8 @@
     </thead>
     <tbody>
         @{
-            <tr>@Model.SearchName</tr>
-            <tr>@Model.SearchGender</tr>
+            <tr>@SearchName</tr>
+            <tr>@SearchGender</tr>
         }
         @foreach (StudentMarkDTO item in Model.StudentMarksLst)
         {

@@ -6,6 +6,9 @@
     List<Student> students = ViewBag.StudentList;
     string keyword = !String.IsNullOrEmpty(ViewBag.keyword) ? ViewBag.keyword.ToString() : "";
 }*@
+@{
+   SearchingCriteria searchingCriteria = ViewBag.SearchingCriteria;
+}
 @using StudentAppMvc.Models.ViewModels
 @model StudentListViewModel
 
@@ -17,11 +20,11 @@
         <form asp-action="Search">
             <div class="form-group">
                 <label for="control-label">Search for Name</label>
-                <input type="text" id = "searchName" name = "searchName" value = @Model.SearchName>
+                <input type="text" id = "searchName" name = "searchName" value = @searchingCriteria.SearchName>
                 <label for="control-label">Search for Gender</label>
                 <select name="searchGender" class="form-control">
                 @{
-                    if (@Model.SearchGender == null)
+                    if (@searchingCriteria.SearchGender == null)
                     {
                         <option value="" selected="selected">-</option>
                         <option value="true">Male</option>
@@ -39,7 +42,7 @@
 </div>
 <br />
 @*@await Html.PartialAsync("_studentLst", new {Students = students, keyword = keyword})*@
-@await Html.PartialAsync("_studentLst", @Model)
+@await Html.PartialAsync("_studentLst", new {StudentMarkLst = @Model});
 <br />
 <div>
     <a asp-action="Index">Back to management</a>

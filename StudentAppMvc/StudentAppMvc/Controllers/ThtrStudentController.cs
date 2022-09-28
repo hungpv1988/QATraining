@@ -44,9 +44,10 @@ namespace StudentAppMvc.Controllers
         /// <param name="searchName"></param>
         /// <param name="searchGender"></param>
         /// <returns></returns>
-        public ActionResult Search(string searchName = "", string searchGender = "")
+        public ActionResult Search(SearchingCriteria searchingCriteria)
         {
-            StudentListViewModel studentListDTO = new StudentListViewModel(_studentService.Search(searchName, searchGender), searchName: searchName, searchGender: searchGender);
+            StudentListViewModel studentListDTO = new StudentListViewModel(_studentService.Search(searchingCriteria));
+            ViewBag.SearchingCriteria = searchingCriteria;
             return View(studentListDTO);
         }
 

@@ -6,17 +6,12 @@
         { 
         }
 
-        public StudentListViewModel(List<StudentMarkDTO> studentMarkList, string searchName = "", string searchGender = "")
+        public StudentListViewModel(List<StudentMarkDTO> studentMarkList)
         {
             StudentMarksLst = studentMarkList;
-            SearchName = searchName;
-            SearchGender = searchGender;
         }
 
         public List<StudentMarkDTO> StudentMarksLst { get; set; }
-        public string SearchName { get; set; }
-        public string SearchGender { get; set; }
-        
 
     }
 }
