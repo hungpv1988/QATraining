@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using StudentAppMvc.Controllers;
 using StudentAppMvc.Data;
 using StudentAppMvc.Repository;
 using StudentAppMvc.Services;
@@ -19,21 +20,31 @@ var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 //Using Preflight
+//builder.Services.AddCors(options =>
+//{
+//    options.AddPolicy(name: MyAllowSpecificOrigins,
+//                policy =>
+//                {
+//                    policy.WithOrigins("http://example.com",
+//                        "http://www.contoso.com",
+//                        "https://cors1.azurewebsites.net",
+//                        "https://cors3.azurewebsites.net",
+//                        "https://localhost:44398",
+//                        "https://localhost:1911");
+//                            //.WithMethods("PUT", "DELETE", "GET");
+//                });
+//});
+
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy(name: MyAllowSpecificOrigins,
+    options.AddPolicy(name: AppConstants.CorsPolicy,
                 policy =>
                 {
-                    policy.WithOrigins("http://example.com",
-                        "http://www.contoso.com",
-                        "https://cors1.azurewebsites.net",
-                        "https://cors3.azurewebsites.net",
-                        "https://localhost:44398",
-                        "https://localhost:1911");
-                            //.WithMethods("PUT", "DELETE", "GET");
+                    policy.WithOrigins("https://localhost:44333")
+                    .WithMethods("PUT", "DELETE", "GET")
+                    .AllowAnyHeader();
                 });
 });
-
 builder.Services.AddControllers();
 // end
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
@@ -69,7 +80,7 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
-app.UseCors(MyAllowSpecificOrigins);
+app.UseCors(AppConstants.CorsPolicy);
 
 app.UseAuthentication();
 app.UseAuthorization();
