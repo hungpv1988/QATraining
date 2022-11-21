@@ -1,7 +1,5 @@
 ﻿@using StudentAppMvc.Models.ViewModels
 @using StudentAppMvc.Models
-
-
 @model StudentListViewModel 
 
 @{
@@ -26,11 +24,21 @@
         <form asp-action="Search">
             <div class="form-group">
                 <label for="control-label">Search for Name</label>
-                <input type="text" id = "searchName" name = "searchName" value = "@searchName" />
+                @{
+                    if (@Model.SearchingCriteriaLst!= null && @Model.SearchingCriteriaLst.SearchName != null)
+                    {
+                        <input type="text" id="SearchName" name="SearchName" value=@Model.SearchingCriteriaLst.SearchName />
+                    }
+                    else
+                    {
+                        <input type="text" id="SearchName" name="SearchName" value="" />
+                    }
+                }
+               
                 <label for="control-label">Search for Gender</label>
-                <select name="searchGender" class="form-control">
+                <select name="SearchGender" class="form-control">
                     @{
-                        if (@searchGender == null)
+                        if (@Model.SearchingCriteriaLst!= null && @Model.SearchingCriteriaLst.SearchGender == null)
                         {
                             <option value="" selected="selected">-</option>
                             <option value="true">Male</option>
@@ -49,7 +57,8 @@
 </div>
 <br />
 @*@await Html.PartialAsync("_studentLst", new {StudentMarkLst = @Model, Keyword = keyword})*@
-@await Html.PartialAsync("_studentLst", @Model);
+@*@await Html.PartialAsync("_studentLst", @Model);*@
+@await Html.PartialAsync("_studentLst",  @Model);
 <div>
     <a asp-action="Create">Create Student</a> | <a asp-action="Index" asp-route-lastestCount=5>Get last 5 students</a> | <a asp-action="Index">Get all students</a>
 </div>

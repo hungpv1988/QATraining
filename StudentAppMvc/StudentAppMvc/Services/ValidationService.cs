@@ -15,8 +15,11 @@ namespace StudentAppMvc.Services
         public virtual IEnumerable<ValidationRuleResult> Validate(Student student)
         {
             if (_validationRules == null)
+            {
                 //return Enumerable.Empty<ValidationRuleResult>();
                 yield return new ValidationRuleResult();
+            }
+
             foreach (IValidationRule validationRule in _validationRules)
             {
                 var result = validationRule.Validate(student);
@@ -26,6 +29,19 @@ namespace StudentAppMvc.Services
                 }
                 yield return result;
             }
+        
+            //var validationResults = new List<ValidationRuleResult>();
+            //foreach (var validationRule in _validationRules)
+            //{
+            //    var result = validationRule.Validate(student);
+            //    if (result.IsSuccess)
+            //    {
+            //        continue;
+            //    }
+            //    validationResults.Add(result);
+            //}
+
+            //return validationResults;
         }
 
     }

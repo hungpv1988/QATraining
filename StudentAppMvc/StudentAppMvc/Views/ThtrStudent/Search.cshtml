@@ -42,7 +42,8 @@
 </div>
 <br />
 @*@await Html.PartialAsync("_studentLst", new {Students = students, keyword = keyword})*@
-@await Html.PartialAsync("_studentLst", new {StudentMarkLst = @Model});
+@*@await Html.PartialAsync("_studentLst", new {StudentMarkLst = @Model});*@
+@await Html.PartialAsync("_studentLst",  @Model);
 <br />
 <div>
     <a asp-action="Index">Back to management</a>

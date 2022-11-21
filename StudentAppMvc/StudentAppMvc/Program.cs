@@ -17,6 +17,25 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
+//Using Preflight
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: MyAllowSpecificOrigins,
+                policy =>
+                {
+                    policy.WithOrigins("http://example.com",
+                        "http://www.contoso.com",
+                        "https://cors1.azurewebsites.net",
+                        "https://cors3.azurewebsites.net",
+                        "https://localhost:44398",
+                        "https://localhost:1911");
+                            //.WithMethods("PUT", "DELETE", "GET");
+                });
+});
+
+builder.Services.AddControllers();
+// end
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
@@ -49,6 +68,8 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
+
+app.UseCors(MyAllowSpecificOrigins);
 
 app.UseAuthentication();
 app.UseAuthorization();

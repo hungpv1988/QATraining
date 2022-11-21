@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Cors;
+using Microsoft.AspNetCore.Mvc;
 using StudentAppMvc.Exceptions;
 using StudentAppMvc.Filter;
 using StudentAppMvc.Models;
@@ -8,7 +9,10 @@ using StudentAppMvc.Services;
 namespace StudentAppMvc.Controllers
 {
     //[AuthenticationFilter]
-    [LogginFilter]
+    //[LogginFilter]
+    [EnableCors("MyPolicy")]
+    [Route("api/[controller]")]
+    [ApiController]
     public class SubjectController : Controller
     {
         public static List<Subject> _subjectList;
@@ -21,14 +25,16 @@ namespace StudentAppMvc.Controllers
         }
 
         // GET: StudentController
+        [HttpGet]
         public ActionResult Index()
         {
-            SubjectViewModel subjectViewModel = new SubjectViewModel(_subjectService.ListSubject(), "my testin");
+            SubjectViewModel subjectViewModel = new SubjectViewModel(_subjectService.ListSubject(), "my testing");
             return View(subjectViewModel);
         }
 
 
         // GET: StudentController/Create
+        [HttpGet]
         public ActionResult Create()
         {
             return View();
