@@ -1,0 +1,35 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Welcome</h1>
+    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+</div>
+
+<div id="box-data"></div>
+<div>
+    <button onclick="sendRequest()">Test to get simple data </button>
+    <button onclick="sendRequest()">Test cors </button>
+</div>
+
+@section scripts{
+    <script>
+        function sendRequest(){
+            debugger;
+            axios.get ('https://localhost:44326/api/Data', {
+              headers:{
+                  'X-Requested-With': 'XMLHttpRequest',
+                  'Access-Control-Allow-Origin' : '*',
+                  'Access-Control-Allow-Methods':'GET'
+                }
+            })
+              .then(response => {
+                document.getElementById('box-data').innerHTML = response.data;
+              })
+              .catch(error => {
+                console.log(error);
+              })
+        }
+    </script>
+} 

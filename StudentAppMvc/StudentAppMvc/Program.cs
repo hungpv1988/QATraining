@@ -40,7 +40,7 @@ builder.Services.AddCors(options =>
     options.AddPolicy(name: AppConstants.CorsPolicy,
                 policy =>
                 {
-                    policy.WithOrigins("https://localhost:44333")
+                    policy.WithOrigins("https://localhost:44334")
                     .WithMethods("PUT", "DELETE", "GET")
                     .AllowAnyHeader();
                 });
